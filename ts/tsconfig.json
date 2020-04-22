@@ -6,7 +6,4 @@
       "moduleResolution": "node",
       "allowSyntheticDefaultImports": true,
   },
-  "include":[
-    "./src/@types/*.ts",
-  ],
 }
