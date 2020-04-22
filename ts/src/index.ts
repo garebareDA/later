@@ -1,7 +1,7 @@
 'use strict';
 import Vue from 'vue';
 import Router from 'vue-router';
-import Vuetify from "vuetify";
+import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 import {default as home } from '../components/home.vue';
 
