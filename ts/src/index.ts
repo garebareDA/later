@@ -8,6 +8,7 @@ import {default as home } from '../components/routes/home.vue';
 import {default as login} from '../components/routes/login.vue';
 import {default as signUp} from '../components/routes/singUp.vue';
 import {default as heads} from '../components/parts/header.vue'
+import {default as profile} from '../components/parts/profile.vue'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDm9xIFZ1Xul9Jbg19ocK6XzeFvU9gje04",
@@ -26,7 +27,8 @@ Vue.use(Vuetify);
 const routes = [
   {path:'/', component:home},
   {path:'/login', component:login},
-  {path:'/singUp', component:signUp}
+  {path:'/singUp', component:signUp},
+  {path:'/profile', component:profile}
 ];
 
 const vuetify = new Vuetify({});

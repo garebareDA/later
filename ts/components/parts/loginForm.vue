@@ -30,7 +30,7 @@
                 <v-card-actions v-if="login.isLogin == true">
                   <v-btn outlined v-on:click="push('singUp')">新規登録</v-btn>
                   <v-spacer />
-                  <v-btn outlined>ログイン</v-btn>
+                  <v-btn outlined v-on:click="loginUser()">ログイン</v-btn>
                 </v-card-actions>
 
                 <v-card-actions v-show="error.isError == true">
@@ -64,25 +64,25 @@ export default Vue.extend({
       this.$router.push(url);
     },
 
-    errors: function(message: string) {
+    errors: function(message: string): void {
       this.$data.error.isError = true;
       this.$data.error.message = message;
     },
 
-    singUp: async function() {
+    judge: function(login: boolean): boolean {
       const email = this.$data.model.eMail;
       const passWord = this.$data.model.passWord;
       const userName = this.$data.model.userName;
       const reEnter = this.$data.model.reEnter;
 
-      if (userName === "") {
+      if (userName === "" && login == true) {
         this.errors("ユーザー名を入力してください");
-        return;
+        return false;
       }
 
       if (email === "") {
         this.errors("メールアドレスを入力してください");
-        return;
+        return false;
       }
 
       var mail_regex1 = new RegExp(
@@ -96,25 +96,37 @@ export default Vue.extend({
           )
         ) {
           this.errors("メールアドレスのフォーマットが不明です");
-          return;
+          return false;
         }
 
         if (!email.match(/\.[a-z]+$/)) {
           this.errors("メールアドレスのフォーマットが不明です");
-          return;
+          return false;
         }
       } else {
         this.errors("メールアドレスのフォーマットが不明です");
-        return;
+        return false;
       }
 
       if (passWord === "") {
         this.errors("パスワードを入力してください");
-        return;
+        return false;
       }
 
-      if (passWord != reEnter) {
+      if (passWord != reEnter && login == true) {
         this.errors("パスワードが一致しません");
+        return false;
+      }
+
+      return true;
+    },
+
+    singUp: async function() {
+      const email = this.$data.model.eMail;
+      const passWord = this.$data.model.passWord;
+      const userName = this.$data.model.userName;
+
+      if (!this.judge(true)) {
         return;
       }
 
@@ -141,12 +153,39 @@ export default Vue.extend({
           });
         });
 
-        this.push('/');
+        this.push("/");
       } catch (error) {
         console.log("error:" + error.message);
         this.errors("エラーが発生しました");
         return;
       }
+    },
+
+    loginUser: async function() {
+      const email = this.$data.model.eMail;
+      const passWord = this.$data.model.passWord;
+      const _this = this;
+
+      if (!this.judge(false)) {
+        return;
+      }
+
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, passWord)
+        .then(() => {
+          this.push("/");
+        })
+        .catch(function(error) {
+          console.log("login error:" + error.message);
+          _this.errors("エラーが発生しました");
+        });
+
+        await firebase.auth().onAuthStateChanged((users) => {
+        if(users){
+          this.push('/');
+        }
+      });
     }
   },
 
