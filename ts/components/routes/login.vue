@@ -1,6 +1,6 @@
 <template>
   <div>
-    <login v-bind:login="isLogin"></login>
+    <login :login="isLogin"></login>
   </div>
 </template>
 

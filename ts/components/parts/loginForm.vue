@@ -12,8 +12,20 @@
               </v-toolbar>
               <v-card-text>
                 <v-form>
-                  <v-text-field label="Eメール" type="text" />
-                  <v-text-field label="パスワード" type="password" />
+                  <v-text-field
+                    label="ユーザー名"
+                    type="text"
+                    v-model="model.userName"
+                    v-if="login.isLogin == false"
+                  />
+                  <v-text-field label="Eメール" type="text" v-model="model.eMail" />
+                  <v-text-field label="パスワード" type="password" v-model="model.passWord" />
+                  <v-text-field
+                    label="パスワードの再入力"
+                    type="password"
+                    v-model="model.reEnter"
+                    v-if="login.isLogin == false"
+                  />
                 </v-form>
                 <v-card-actions v-if="login.isLogin == true">
                   <v-btn outlined v-on:click="push('singUp')">新規登録</v-btn>
@@ -23,9 +35,12 @@
 
                 <v-card-actions v-if="login.isLogin == false">
                   <v-spacer />
-                  <v-btn outlined>登録</v-btn>
+                  <v-btn outlined v-on:click="singUp()">登録</v-btn>
                 </v-card-actions>
 
+                <v-card-actions v-if="error.isError">
+                  <div>{{error.message}}</div>
+                </v-card-actions>
               </v-card-text>
             </v-card>
           </v-col>
@@ -36,15 +51,95 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from "vue";
+import * as firebase from "firebase/app";
+import 'firebase/auth';
 export default Vue.extend({
-  name:'login',
-  props: ['login'],
+  name: "login",
+  props: ["login"],
 
-  methods:{
-    push:function(url:string) {
+  methods: {
+    push: function(url: string) {
       this.$router.push(url);
+    },
+
+    errors: function(message: string) {
+      this.$data.isError = true;
+      this.$data.message = message;
+    },
+
+    singUp: async function() {
+      const email = this.$data.email;
+      const passWord = this.$data.passWord;
+      const userName = this.$data.userName;
+      const reEnter = this.$data.reEnter;
+
+      if (userName === "") {
+        this.errors("ユーザー名を入力してください");
+        return;
+      }
+
+      if (email === "") {
+        this.errors("メールアドレスを入力してください");
+        return;
+      }
+
+      if (passWord === "") {
+        this.errors("パスワードを入力してください");
+        return;
+      }
+
+      if (passWord != reEnter) {
+        this.errors("パスワードが一致しません");
+        return;
+      }
+
+      const providers = await firebase.auth().fetchSignInMethodsForEmail(email);
+      if (
+        providers.findIndex(
+          p =>
+            p === firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD
+        ) !== -1
+      ) {
+        this.errors("すでに登録されているようです");
+        return;
+      }
+
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, passWord)
+        .then(() => {
+          const user = firebase.auth().currentUser;
+          user?.sendEmailVerification().then(() => {
+            user.updateProfile({
+              displayName: userName
+            });
+          }).catch((error) => {
+            console.log("error:" + error.message);
+            this.errors("エラーが発生しました");
+          });
+        })
+        .catch(error => {
+          console.log("error:" + error.message);
+          this.errors("エラーが発生しました");
+        });
     }
+  },
+
+  data: () => {
+    return {
+      model: {
+        eMail: "",
+        passWord: "",
+        reEnter: "",
+        userName: "",
+      },
+
+      error: {
+        isError: false,
+        message: ""
+      }
+    };
   }
-})
+});
 </script>
