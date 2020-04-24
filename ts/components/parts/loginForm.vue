@@ -93,7 +93,7 @@ export default Vue.extend({
         this.errors("パスワードが一致しません");
         return;
       }
-
+      console.log("er");
       const providers = await firebase.auth().fetchSignInMethodsForEmail(email);
       if (
         providers.findIndex(
@@ -104,7 +104,7 @@ export default Vue.extend({
         this.errors("すでに登録されているようです");
         return;
       }
-
+      console.log("er");
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, passWord)
