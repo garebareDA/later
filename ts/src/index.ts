@@ -6,6 +6,7 @@ import 'vuetify/dist/vuetify.min.css';
 import {default as home } from '../components/routes/home.vue';
 import {default as login} from '../components/routes/login.vue';
 import {default as signUp} from '../components/routes/singUp.vue';
+import {default as heads} from '../components/parts/header.vue'
 
 Vue.use(Router);
 Vue.use(Vuetify);
@@ -21,6 +22,9 @@ const router = new Router({
 });
 
 new Vue({
+  components:{
+    heads
+  },
   el:"#app",
   router,
   vuetify,

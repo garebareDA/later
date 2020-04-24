@@ -1,6 +1,5 @@
 <template>
   <div>
-    <heads></heads>
     <login v-bind:login="isLogin"></login>
   </div>
 </template>
