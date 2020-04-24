@@ -34,6 +34,10 @@ export default Vue.extend({
     drawer: null
   }),
 
+  computed:() => {
+    
+  },
+
   methods:{
     push:function(url:string) {
       this.$router.push(url);

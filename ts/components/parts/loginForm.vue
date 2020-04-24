@@ -33,13 +33,14 @@
                   <v-btn outlined>ログイン</v-btn>
                 </v-card-actions>
 
+                <v-card-actions v-show="error.isError == true">
+                  <v-spacer />
+                  <div class="red--text">{{error.message}}</div>
+                </v-card-actions>
+
                 <v-card-actions v-if="login.isLogin == false">
                   <v-spacer />
                   <v-btn outlined v-on:click="singUp()">登録</v-btn>
-                </v-card-actions>
-
-                <v-card-actions v-if="error.isError">
-                  <div>{{error.message}}</div>
                 </v-card-actions>
               </v-card-text>
             </v-card>
@@ -53,7 +54,7 @@
 <script lang="ts">
 import Vue from "vue";
 import * as firebase from "firebase/app";
-import 'firebase/auth';
+import "firebase/auth";
 export default Vue.extend({
   name: "login",
   props: ["login"],
@@ -64,15 +65,15 @@ export default Vue.extend({
     },
 
     errors: function(message: string) {
-      this.$data.isError = true;
-      this.$data.message = message;
+      this.$data.error.isError = true;
+      this.$data.error.message = message;
     },
 
     singUp: async function() {
-      const email = this.$data.email;
-      const passWord = this.$data.passWord;
-      const userName = this.$data.userName;
-      const reEnter = this.$data.reEnter;
+      const email = this.$data.model.eMail;
+      const passWord = this.$data.model.passWord;
+      const userName = this.$data.model.userName;
+      const reEnter = this.$data.model.reEnter;
 
       if (userName === "") {
         this.errors("ユーザー名を入力してください");
@@ -81,6 +82,29 @@ export default Vue.extend({
 
       if (email === "") {
         this.errors("メールアドレスを入力してください");
+        return;
+      }
+
+      var mail_regex1 = new RegExp(
+        "(?:[-!#-'*+/-9=?A-Z^-~]+.?(?:.[-!#-'*+/-9=?A-Z^-~]+)*|\"(?:[!#-[]-~]|\\\\[\x09 -~])*\")@[-!#-'*+/-9=?A-Z^-~]+(?:.[-!#-'*+/-9=?A-Z^-~]+)*"
+      );
+      var mail_regex2 = new RegExp("^[^@]+@[^@]+$");
+      if (email.match(mail_regex1) && email.match(mail_regex2)) {
+        if (
+          email.match(
+            /[^a-zA-Z0-9\!\"\#\$\%\&\'\(\)\=\~\|\-\^\\\@\[\;\:\]\,\.\/\\\<\>\?\_\`\{\+\*\} ]/
+          )
+        ) {
+          this.errors("メールアドレスのフォーマットが不明です");
+          return;
+        }
+
+        if (!email.match(/\.[a-z]+$/)) {
+          this.errors("メールアドレスのフォーマットが不明です");
+          return;
+        }
+      } else {
+        this.errors("メールアドレスのフォーマットが不明です");
         return;
       }
 
@@ -93,36 +117,36 @@ export default Vue.extend({
         this.errors("パスワードが一致しません");
         return;
       }
-      console.log("er");
-      const providers = await firebase.auth().fetchSignInMethodsForEmail(email);
-      if (
-        providers.findIndex(
-          p =>
-            p === firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD
-        ) !== -1
-      ) {
-        this.errors("すでに登録されているようです");
+
+      try {
+        const providers = await firebase
+          .auth()
+          .fetchSignInMethodsForEmail(email);
+        if (
+          providers.findIndex(
+            p =>
+              p ===
+              firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD
+          ) !== -1
+        ) {
+          this.errors("すでに登録されているようです");
+          return;
+        }
+
+        await firebase.auth().createUserWithEmailAndPassword(email, passWord);
+        const user = firebase.auth().currentUser;
+        user?.sendEmailVerification().then(() => {
+          user.updateProfile({
+            displayName: userName
+          });
+        });
+
+        this.push('/');
+      } catch (error) {
+        console.log("error:" + error.message);
+        this.errors("エラーが発生しました");
         return;
       }
-      console.log("er");
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, passWord)
-        .then(() => {
-          const user = firebase.auth().currentUser;
-          user?.sendEmailVerification().then(() => {
-            user.updateProfile({
-              displayName: userName
-            });
-          }).catch((error) => {
-            console.log("error:" + error.message);
-            this.errors("エラーが発生しました");
-          });
-        })
-        .catch(error => {
-          console.log("error:" + error.message);
-          this.errors("エラーが発生しました");
-        });
     }
   },
 
@@ -132,7 +156,7 @@ export default Vue.extend({
         eMail: "",
         passWord: "",
         reEnter: "",
-        userName: "",
+        userName: ""
       },
 
       error: {
