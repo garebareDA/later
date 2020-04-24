@@ -7,8 +7,9 @@ import 'vuetify/dist/vuetify.min.css';
 import {default as home } from '../components/routes/home.vue';
 import {default as login} from '../components/routes/login.vue';
 import {default as signUp} from '../components/routes/singUp.vue';
-import {default as heads} from '../components/parts/header.vue'
-import {default as profile} from '../components/parts/profile.vue'
+import {default as profile} from '../components/routes/profile.vue';
+import {default as heads} from '../components/parts/header.vue';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyDm9xIFZ1Xul9Jbg19ocK6XzeFvU9gje04",

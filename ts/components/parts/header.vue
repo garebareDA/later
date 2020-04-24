@@ -6,11 +6,11 @@
           <v-list-item-title>見る</v-list-item-title>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link v-if="isLogin == true">
           <v-list-item-title>書く</v-list-item-title>
         </v-list-item>
 
-        <v-list-item link v-on:click="push('profile')">
+        <v-list-item link v-on:click="push('profile')" v-if="isLogin == true">
           <v-list-item-title>プロフィール</v-list-item-title>
         </v-list-item>
       </v-list>
