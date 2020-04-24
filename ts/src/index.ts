@@ -5,7 +5,7 @@ import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 import {default as home } from '../components/routes/home.vue';
 import {default as login} from '../components/routes/login.vue';
-import {default as signUp} from '../components/routes/signUp.vue';
+import {default as signUp} from '../components/routes/singUp.vue';
 
 Vue.use(Router);
 Vue.use(Vuetify);

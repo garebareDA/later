@@ -16,7 +16,7 @@
                   <v-text-field label="パスワード" type="password" />
                 </v-form>
                 <v-card-actions v-if="login.isLogin == true">
-                  <v-btn outlined>新規登録</v-btn>
+                  <v-btn outlined v-on:click="push('singUp')">新規登録</v-btn>
                   <v-spacer />
                   <v-btn outlined>ログイン</v-btn>
                 </v-card-actions>
@@ -39,6 +39,12 @@
 import Vue from 'vue'
 export default Vue.extend({
   name:'login',
-  props: ['login']
+  props: ['login'],
+
+  methods:{
+    push:function(url:string) {
+      this.$router.push(url);
+    }
+  }
 })
 </script>
