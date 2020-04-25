@@ -144,15 +144,15 @@ export default Vue.extend({
           this.errors("すでに登録されているようです");
           return;
         }
-
         await firebase.auth().createUserWithEmailAndPassword(email, passWord);
         const user = firebase.auth().currentUser;
-        await user?.sendEmailVerification().then(() => {
-          user.updateProfile({
-            displayName: userName
+        if (user) {
+          await user.sendEmailVerification().then(() => {
+            user.updateProfile({
+              displayName: userName
+            });
           });
-        });
-
+        }
         this.$emit("login");
         this.$router.push("/");
       } catch (error) {
