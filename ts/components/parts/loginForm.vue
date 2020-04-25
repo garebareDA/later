@@ -85,10 +85,10 @@ export default Vue.extend({
         return false;
       }
 
-      var mail_regex1 = new RegExp(
+      const mail_regex1 = new RegExp(
         "(?:[-!#-'*+/-9=?A-Z^-~]+.?(?:.[-!#-'*+/-9=?A-Z^-~]+)*|\"(?:[!#-[]-~]|\\\\[\x09 -~])*\")@[-!#-'*+/-9=?A-Z^-~]+(?:.[-!#-'*+/-9=?A-Z^-~]+)*"
       );
-      var mail_regex2 = new RegExp("^[^@]+@[^@]+$");
+      const mail_regex2 = new RegExp("^[^@]+@[^@]+$");
       if (email.match(mail_regex1) && email.match(mail_regex2)) {
         if (
           email.match(
@@ -144,13 +144,13 @@ export default Vue.extend({
           this.errors("すでに登録されているようです");
           return;
         }
+
         await firebase.auth().createUserWithEmailAndPassword(email, passWord);
         const user = firebase.auth().currentUser;
         if (user) {
-          await user.sendEmailVerification().then(() => {
-            user.updateProfile({
-              displayName: userName
-            });
+          await user.sendEmailVerification();
+          await user.updateProfile({
+            displayName: userName
           });
         }
         this.$emit("login");
