@@ -153,7 +153,7 @@ export default Vue.extend({
           });
         });
 
-        this.push("/");
+        this.$router.push("/");
       } catch (error) {
         console.log("error:" + error.message);
         this.errors("エラーが発生しました");
@@ -170,20 +170,25 @@ export default Vue.extend({
         return;
       }
 
-      await firebase
+      firebase
         .auth()
-        .signInWithEmailAndPassword(email, passWord)
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() => {
-          this.push("/");
-        })
-        .catch(function(error) {
-          console.log("login error:" + error.message);
-          _this.errors("エラーが発生しました");
+          return firebase
+            .auth()
+            .signInWithEmailAndPassword(email, passWord)
+            .then(() => {
+              this.$router.push("/");
+            })
+            .catch((err) => {
+              console.log(err);
+              this.errors("エラーが発生しました");
+            });
         });
 
         await firebase.auth().onAuthStateChanged((users) => {
         if(users){
-          this.push('/');
+          this.$router.push('/');
         }
       });
     }
