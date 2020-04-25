@@ -172,23 +172,18 @@ export default Vue.extend({
 
       firebase
         .auth()
-        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .signInWithEmailAndPassword(email, passWord)
         .then(() => {
-          return firebase
-            .auth()
-            .signInWithEmailAndPassword(email, passWord)
-            .then(() => {
-              this.$router.push("/");
-            })
-            .catch((err) => {
-              console.log(err);
-              this.errors("エラーが発生しました");
-            });
+          console.log("loginしました");
+          this.$router.push("/");
+        })
+        .catch(err => {
+          console.log(err);
+          this.errors("エラーが発生しました");
         });
-
-        await firebase.auth().onAuthStateChanged((users) => {
-        if(users){
-          this.$router.push('/');
+      await firebase.auth().onAuthStateChanged(users => {
+        if (users) {
+          this.$router.push("/");
         }
       });
     }

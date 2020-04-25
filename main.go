@@ -1,8 +1,8 @@
 package main
 
-import(
-	"later/routes"
+import (
 	"github.com/gin-gonic/gin"
+	"later/routes"
 )
 
 func main() {
@@ -11,5 +11,5 @@ func main() {
 	router.Static("static", "./static/")
 
 	router.GET("/", routes.Home)
-	router.Run(":8000");
+	router.Run(":8000")
 }
