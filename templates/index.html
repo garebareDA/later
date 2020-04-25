@@ -10,8 +10,8 @@
 <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <div id="app">
     <v-app>
-      <heads></heads>
-      <router-view></router-view>
+      <heads :islogin="isLogin"></heads>
+      <router-view @login="isLogins"></router-view>
     </v-app>
   </div>
   <script src="static/index.js"></script>

@@ -4,12 +4,14 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
+
 import { default as home } from '../components/routes/home.vue';
 import { default as login } from '../components/routes/login.vue';
 import { default as signUp } from '../components/routes/singUp.vue';
 import { default as profile } from '../components/routes/profile.vue';
 import { default as heads } from '../components/parts/header.vue';
 
+import isLogin from './isLogin';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDm9xIFZ1Xul9Jbg19ocK6XzeFvU9gje04",
@@ -38,25 +40,31 @@ const router = new Router({
 });
 
 new Vue({
+  data: () => {
+    return {
+      isLogin: new isLogin(false, null),
+    }
+  },
+
   components: {
     heads
   },
+
   created: function () {
-    this.isLogin();
+    this.isLogins();
   },
+
   methods: {
-    isLogin: function () {
-      const _this = this;
-      firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-          _this.$data.isLogin = true;
-          _this.$data.displayName = user.displayName;
-        } else {
-          _this.$data.isLogin = false;
-        }
-      });
+    isLogins: async function () {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        this.$data.isLogin = new isLogin(true, user.displayName);
+      } else {
+        this.$data.isLogin = new isLogin(false, null);
+      }
     }
   },
+
   el: "#app",
   router,
   vuetify,

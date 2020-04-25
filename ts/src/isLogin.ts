@@ -1,8 +1,8 @@
 class IsLogin {
   is: Boolean;
-  displayName:String;
+  displayName:string|null;
 
-  constructor(is:Boolean, displayName:String) {
+  constructor(is:Boolean, displayName:string|null) {
     this.is = is;
     this.displayName = displayName;
   }
