@@ -8,7 +8,7 @@
 import Vue from 'vue';
 import { default as heads } from '../parts/header.vue';
 import {default as login} from '../parts/loginForm.vue';
-import Login from '../../src/login'
+import Login from '../../src/login';
 
 const isLogin = new Login(true);
 export default Vue.extend({
@@ -19,7 +19,7 @@ export default Vue.extend({
 
   methods:{
     isLogins:function() {
-      this.$emit('login');
+      this.$emit('check');
     }
   },
 

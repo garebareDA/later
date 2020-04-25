@@ -38,26 +38,33 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 export default Vue.extend({
   methods: {
-    logout: function() {
-      const _this = this;
-      firebase.auth().onAuthStateChanged(user => {
-        firebase
-          .auth()
-          .signOut()
-          .then(() => {
-            _this.$router.push('/');
-          })
-          .catch(error => {
-            _this.$data.error = true;
-          });
-      });
-    },
+    logout:async function() {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        try {
+          await firebase.auth().signOut();
+          this.$emit("check");
+          this.$router.push("/");
+        } catch (error) {
+          this.$data.error = true;
+        }
+      } else {
+        this.$data.error = true;
+      }
+    }
   },
 
-  data:() => {
-    return{
-      error:false,
+  created:function(){
+    const user = firebase.auth().currentUser;
+    if(!user){
+      this.$router.push('/');
     }
+  },
+
+  data: () => {
+    return {
+      error: false
+    };
   }
 });
 </script>

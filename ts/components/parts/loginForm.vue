@@ -147,7 +147,7 @@ export default Vue.extend({
 
         await firebase.auth().createUserWithEmailAndPassword(email, passWord);
         const user = firebase.auth().currentUser;
-        user?.sendEmailVerification().then(() => {
+        await user?.sendEmailVerification().then(() => {
           user.updateProfile({
             displayName: userName
           });
@@ -169,16 +169,20 @@ export default Vue.extend({
       if (!this.judge(false)) {
         return;
       }
-      await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, passWord)
-        .catch(err => {
-          console.log(err);
-          this.errors("エラーが発生しました");
-        });
 
-      this.$emit("login");
-      this.$router.push("/");
+      try {
+        firebase
+          .auth()
+          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => {
+            return firebase.auth().signInWithEmailAndPassword(email, passWord);
+          });
+        this.$emit("login");
+        this.$router.push("/");
+      } catch (err) {
+        console.log(err);
+        this.errors("エラーが発生しました");
+      }
     }
   },
 

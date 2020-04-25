@@ -1,6 +1,6 @@
 <template>
   <div>
-    <login :login="isLogin"></login>
+    <login :login="isLogin" @login="isLogins"></login>
   </div>
 </template>
 
@@ -15,6 +15,12 @@ export default Vue.extend({
     components: {
     heads,
     login,
+  },
+
+  methods: {
+    isLogins:function() {
+      this.$emit("check");
+    }
   },
 
   data:() => {
