@@ -169,20 +169,14 @@ export default Vue.extend({
       if (!this.judge(false)) {
         return;
       }
-
-      try {
-        firebase
-          .auth()
-          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-          .then(() => {
-            return firebase.auth().signInWithEmailAndPassword(email, passWord);
-          });
-        this.$emit("login");
-        this.$router.push("/");
-      } catch (err) {
-        console.log(err);
-        this.errors("エラーが発生しました");
-      }
+      firebase
+        .auth()
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+          return firebase.auth().signInWithEmailAndPassword(email, passWord);
+        });
+      this.$emit("login");
+      this.$router.push("/");
     }
   },
 
