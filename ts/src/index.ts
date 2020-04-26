@@ -45,12 +45,6 @@ const router = new Router({
 });
 
 new Vue({
-  data: () => {
-    return {
-      isLogin: new isLogin(false, null),
-    }
-  },
-
   components: {
     heads
   },
@@ -68,6 +62,12 @@ new Vue({
         this.$data.isLogin = new isLogin(false, null);
       }
       console.log(user);
+    }
+  },
+
+  data: () => {
+    return {
+      isLogin: new isLogin(false, null),
     }
   },
 
