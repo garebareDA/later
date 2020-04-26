@@ -9,7 +9,7 @@
                 <v-spacer />
                 <v-toolbar-title v-if="login.isLogin == 'login'">ログイン</v-toolbar-title>
                 <v-toolbar-title v-if="login.isLogin == 'singUp'">新規登録</v-toolbar-title>
-                <v-toolbar-title v-if="login.isLogin == 'recertification'">再認証</v-toolbar-title>
+                <v-toolbar-title v-if="login.isLogin == 'recertification'">再ログイン</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form>
@@ -41,7 +41,7 @@
 
                 <v-card-actions v-if="login.isLogin == 'recertification'">
                   <v-spacer />
-                  <v-btn outlined v-on:click="recertification()">再認証</v-btn>
+                  <v-btn outlined v-on:click="recertification()">再ログイン</v-btn>
                 </v-card-actions>
 
                 <v-card-actions v-if="login.isLogin == 'singUp'">
@@ -174,11 +174,30 @@ export default Vue.extend({
       this.$router.push("/");
     },
 
-    recertification: function() {
+    recertification:async function() {
       const email = this.$data.model.eMail;
       const passWord = this.$data.model.passWord;
-      this.auth(email, passWord);
-      this.$emit('auth');
+
+      if (!this.judge(false)) {
+        return;
+      }
+
+      const user = firebase.auth().currentUser;
+      const credential = firebase.auth.EmailAuthProvider.credential(
+        email,
+        passWord
+      );
+
+      if(!user){
+        this.$router.push('/');
+      }
+
+      try {
+        await user?.reauthenticateWithCredential(credential);
+        this.$emit("auth");
+      } catch (error) {
+        this.errors("エラーが発生しました");
+      }
     },
 
     auth: async function(email: string, password: string) {
