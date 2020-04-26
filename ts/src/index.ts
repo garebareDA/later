@@ -10,7 +10,8 @@ import { default as login } from '../components/routes/login.vue';
 import { default as signUp } from '../components/routes/singUp.vue';
 import { default as profile } from '../components/routes/profile.vue';
 import { default as heads } from '../components/parts/header.vue';
-import {default as change} from '../components/routes/change.vue'
+import { default as change } from '../components/routes/change.vue';
+import { default as write } from '../components/routes/write.vue';
 
 import isLogin from './isLogin';
 
@@ -28,12 +29,14 @@ firebase.initializeApp(firebaseConfig);
 
 Vue.use(Router);
 Vue.use(Vuetify);
+
 const routes = [
   { path: '/', component: home },
   { path: '/login', component: login },
   { path: '/singUp', component: signUp },
   { path: '/profile', component: profile },
-  {path: '/change/:state', component: change}
+  { path: '/change/:state', component: change },
+  { path: '/write', component: write },
 ];
 
 const vuetify = new Vuetify({});
@@ -57,7 +60,7 @@ new Vue({
   },
 
   methods: {
-    isLogins:function () {
+    isLogins: function () {
       const user = firebase.auth().currentUser;
       if (user) {
         this.$data.isLogin = new isLogin(true, user.displayName);

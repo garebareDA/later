@@ -4,7 +4,7 @@
     <v-content v-if="auth == false">
       <v-container>
         <v-card class="mx-auto" max-width="500">
-          <v-list dense two-line>
+          <v-list two-line>
             <v-list-item link v-on:click="changeName()">
               <v-list-item-title>ユーザー名の変更</v-list-item-title>
             </v-list-item>

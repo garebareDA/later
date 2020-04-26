@@ -6,7 +6,7 @@
           <v-list-item-title>見る</v-list-item-title>
         </v-list-item>
 
-        <v-list-item link v-if="islogin.is == true">
+        <v-list-item link v-if="islogin.is == true"  v-on:click="push('write')">
           <v-list-item-title>書く</v-list-item-title>
         </v-list-item>
 

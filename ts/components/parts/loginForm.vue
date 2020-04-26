@@ -150,7 +150,6 @@ export default Vue.extend({
           this.errors("すでに登録されているようです");
           return;
         }
-
         await firebase.auth().createUserWithEmailAndPassword(email, passWord);
         const user = firebase.auth().currentUser;
         if (user) {
@@ -169,12 +168,20 @@ export default Vue.extend({
     loginUser: function() {
       const email = this.$data.model.eMail;
       const passWord = this.$data.model.passWord;
-      this.auth(email, passWord);
-      this.$emit("login");
-      this.$router.push("/");
+      if (!this.judge(false)) {
+        return;
+      }
+      try {
+        firebase.auth().signInWithEmailAndPassword(email, passWord);
+        this.$emit("login");
+        this.$router.push("/");
+      } catch (err) {
+        console.log(err);
+        this.errors("エラーが発生しました");
+      }
     },
 
-    recertification:async function() {
+    recertification: async function() {
       const email = this.$data.model.eMail;
       const passWord = this.$data.model.passWord;
 
@@ -188,8 +195,8 @@ export default Vue.extend({
         passWord
       );
 
-      if(!user){
-        this.$router.push('/');
+      if (!user) {
+        this.$router.push("/");
       }
 
       try {
@@ -200,22 +207,7 @@ export default Vue.extend({
       }
     },
 
-    auth: async function(email: string, password: string) {
-      if (!this.judge(false)) {
-        return;
-      }
-      try {
-        await firebase
-          .auth()
-          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-          .then(() => {
-            return firebase.auth().signInWithEmailAndPassword(email, password);
-          });
-      } catch (err) {
-        console.log(err);
-        this.errors("エラーが発生しました");
-      }
-    }
+    auth: async function(email: string, password: string) {}
   },
 
   data: () => {
