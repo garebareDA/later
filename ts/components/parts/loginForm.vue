@@ -157,6 +157,8 @@ export default Vue.extend({
           await user.updateProfile({
             displayName: userName
           });
+          this.$emit("login");
+          this.$router.push("/");
         }
       } catch (error) {
         console.log("error:" + error.message);
