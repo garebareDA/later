@@ -10,7 +10,7 @@ import { default as heads } from '../parts/header.vue';
 import {default as login} from '../parts/loginForm.vue';
 import Login from '../../src/login';
 
-const isLogin = new Login(false);
+const isLogin = new Login("recertification");
 export default Vue.extend({
     components: {
     heads,

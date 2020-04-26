@@ -1,7 +1,7 @@
 class Login {
-  isLogin: Boolean;
+  isLogin: string;
 
-  constructor(isLogin:Boolean) {
+  constructor(isLogin:string) {
     this.isLogin = isLogin;
   }
 }

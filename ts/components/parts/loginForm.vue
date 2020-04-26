@@ -7,8 +7,9 @@
             <v-card class="elevation-12">
               <v-toolbar>
                 <v-spacer />
-                <v-toolbar-title v-if="login.isLogin == true">ログイン</v-toolbar-title>
-                <v-toolbar-title v-if="login.isLogin == false">新規登録</v-toolbar-title>
+                <v-toolbar-title v-if="login.isLogin == 'login'">ログイン</v-toolbar-title>
+                <v-toolbar-title v-if="login.isLogin == 'singUp'">新規登録</v-toolbar-title>
+                <v-toolbar-title v-if="login.isLogin == 'recertification'">再認証</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form>
@@ -16,7 +17,7 @@
                     label="ユーザー名"
                     type="text"
                     v-model="model.userName"
-                    v-if="login.isLogin == false"
+                    v-if="login.isLogin == 'singUp'"
                   />
                   <v-text-field label="Eメール" type="text" v-model="model.eMail" />
                   <v-text-field label="パスワード" type="password" v-model="model.passWord" />
@@ -24,10 +25,10 @@
                     label="パスワードの再入力"
                     type="password"
                     v-model="model.reEnter"
-                    v-if="login.isLogin == false"
+                    v-if="login.isLogin == 'singUp'"
                   />
                 </v-form>
-                <v-card-actions v-if="login.isLogin == true">
+                <v-card-actions v-if="login.isLogin == 'login'">
                   <v-btn outlined v-on:click="push('singUp')">新規登録</v-btn>
                   <v-spacer />
                   <v-btn outlined v-on:click="loginUser()">ログイン</v-btn>
@@ -38,7 +39,12 @@
                   <div class="red--text">{{error.message}}</div>
                 </v-card-actions>
 
-                <v-card-actions v-if="login.isLogin == false">
+                <v-card-actions v-if="login.isLogin == 'recertification'">
+                  <v-spacer />
+                  <v-btn outlined v-on:click="recertification()">再認証</v-btn>
+                </v-card-actions>
+
+                <v-card-actions v-if="login.isLogin == 'singUp'">
                   <v-spacer />
                   <v-btn outlined v-on:click="singUp()">登録</v-btn>
                 </v-card-actions>
@@ -153,8 +159,6 @@ export default Vue.extend({
             displayName: userName
           });
         }
-        this.$emit("login");
-        this.$router.push("/");
       } catch (error) {
         console.log("error:" + error.message);
         this.errors("エラーが発生しました");
@@ -162,21 +166,36 @@ export default Vue.extend({
       }
     },
 
-    loginUser: async function() {
+    loginUser: function() {
       const email = this.$data.model.eMail;
       const passWord = this.$data.model.passWord;
+      this.auth(email, passWord);
+      this.$emit("login");
+      this.$router.push("/");
+    },
 
+    recertification: function() {
+      const email = this.$data.model.eMail;
+      const passWord = this.$data.model.passWord;
+      this.auth(email, passWord);
+      this.$emit('auth');
+    },
+
+    auth: async function(email: string, password: string) {
       if (!this.judge(false)) {
         return;
       }
-      firebase
-        .auth()
-        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-          return firebase.auth().signInWithEmailAndPassword(email, passWord);
-        });
-      this.$emit("login");
-      this.$router.push("/");
+      try {
+        await firebase
+          .auth()
+          .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => {
+            return firebase.auth().signInWithEmailAndPassword(email, password);
+          });
+      } catch (err) {
+        console.log(err);
+        this.errors("エラーが発生しました");
+      }
     }
   },
 

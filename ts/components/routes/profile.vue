@@ -1,20 +1,21 @@
 <template>
   <div>
-    <v-content>
+    <loginProfile v-if="auth == true" :login="isLogin" @auth="push()"></loginProfile>
+    <v-content v-if="auth == false">
       <v-container>
         <v-card class="mx-auto" max-width="500">
           <v-list dense two-line>
-            <v-list-item link>
+            <v-list-item link v-on:click="changeName()">
               <v-list-item-title>ユーザー名の変更</v-list-item-title>
             </v-list-item>
             <v-divider />
 
-            <v-list-item link>
+            <v-list-item link v-on:click="changeEmail()">
               <v-list-item-title>Eメールの変更</v-list-item-title>
             </v-list-item>
             <v-divider />
 
-            <v-list-item link>
+            <v-list-item link v-on:click="changePassword()">
               <v-list-item-title>パスワードの変更</v-list-item-title>
             </v-list-item>
             <v-divider />
@@ -36,6 +37,10 @@
 import Vue from "vue";
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import Login from '../../src/login';
+import loginProfile from '../parts/loginForm.vue';
+
+const isLogin = new Login("recertification");
 export default Vue.extend({
   methods: {
     logout:async function() {
@@ -51,6 +56,25 @@ export default Vue.extend({
       } else {
         this.$data.error = true;
       }
+    },
+
+    changeName:function() {
+      this.$data.change = "name";
+      this.$data.auth = true;
+    },
+
+    changeEmail:function() {
+      this.$data.change = "email";
+      this.$data.auth = true;
+    },
+
+    changePassword:function() {
+      this.$data.change = "password";
+      this.$data.auth = true;
+    },
+
+    push:function() {
+      this.$router.push("change/" + this.$data.change);
     }
   },
 
@@ -61,9 +85,16 @@ export default Vue.extend({
     }
   },
 
+  components: {
+    loginProfile,
+  },
+
   data: () => {
     return {
-      error: false
+      error: false,
+      auth:false,
+      change:"",
+      isLogin:isLogin,
     };
   }
 });
