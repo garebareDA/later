@@ -2,17 +2,18 @@
   <div>
     <v-content>
       <v-container>
-        <editor/>
-      </v-container>
-    </v-content>
-    <v-content>
-      <v-container>
         <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="4">
+          <v-col cols="40" sm="8" md="4">
             <v-tabs>
+              <v-tab>記事を書く</v-tab>
               <v-tab>書いた記事</v-tab>
               <v-tab>下書き</v-tab>
               <v-tab>いいねした記事</v-tab>
+
+            <v-tab-item>
+              <editor/>
+            </v-tab-item>
+
             <v-tab-item>
               <v-card flat>
                 <v-card-text>記事</v-card-text>
