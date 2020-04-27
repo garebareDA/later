@@ -17,7 +17,9 @@ export default Vue.extend({
 
   computed: {
     compiledMarkdown: function() {
-      return marked(this.$data.text, { sanitize: true });
+      const html = marked(this.$data.text, { sanitize: true });
+      console.log(html);
+      return html;
     }
   },
 
