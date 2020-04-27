@@ -2,9 +2,7 @@
   <div>
     <v-content>
       <v-container>
-        <v-row align="center" justify="center">
-          <v-col cols="40" sm="8" md="4">
-            <v-tabs>
+            <v-tabs centered>
               <v-tab>記事を書く</v-tab>
               <v-tab>書いた記事</v-tab>
               <v-tab>下書き</v-tab>
@@ -32,8 +30,6 @@
               </v-card>
             </v-tab-item>
             </v-tabs>
-          </v-col>
-        </v-row>
       </v-container>
     </v-content>
   </div>

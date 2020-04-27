@@ -1,7 +1,18 @@
 <template>
   <div>
-      <textarea :value="text" ></textarea>
-      <div v-html="compiledMarkdown"></div>
+    <v-container>
+      <v-text-field label="タイトル" type="text" />
+      <v-row>
+        <v-col>
+          <v-textarea filled label="※MarkDown記法で書いてください" auto-grow v-model="text"></v-textarea>
+        </v-col>
+        <v-col>
+          <div v-html="markdown"></div>
+        </v-col>
+      </v-row>
+      <v-btn outlined style="float: right;">下書き保存</v-btn>
+      <v-btn outlined style="float: right;">公開</v-btn>
+    </v-container>
   </div>
 </template>
 
@@ -9,20 +20,18 @@
 import Vue from "vue";
 import marked from "marked";
 export default Vue.extend({
-  data() {
+  data: () => {
     return {
-      text: ""
+      text: "",
+      markdown: ""
     };
   },
 
-  computed: {
-    compiledMarkdown: function() {
-      const html = marked(this.$data.text, { sanitize: true });
-      console.log(html);
-      return html;
+  watch: {
+    text: function() {
+      const html = marked(this.$data.text, { sanitize: true, breaks: true });
+      this.$data.markdown = html;
     }
-  },
-
-
+  }
 });
 </script>
