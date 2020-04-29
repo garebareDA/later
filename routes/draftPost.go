@@ -34,8 +34,8 @@ func DraftPost(c *gin.Context) {
 	draft.Content = content
 	draft.UserID = user.UID
 	draft.Title = title
-
 	db.Create(&draft)
+
 	c.JSON(200, gin.H{
 		"status": "posted",
 	})

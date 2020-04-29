@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "axios": "^0.19.2",
     "css-loader": "^3.5.2",
     "deepmerge": "^4.2.2",
     "fibers": "^4.0.2",
