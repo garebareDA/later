@@ -25,24 +25,25 @@ func DraftPost(c *gin.Context) {
 	user, err := firebase.FirebaseUser(token)
 	if err != nil {
 		statusError(c, "ログインしていません")
-		log.Fatalln("user not login")
+		log.Println("user not login")
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		statusError(c, "データベースエラー")
-		log.Fatalln("database is closed")
+		log.Println("database is closed")
 	}
 	defer db.Close()
 
 	draft := database.Draft{}
-	if db.Where("DraftID = ?", uuid).First(&draft).RecordNotFound() {
+	if db.Where("draft_id = ?", uuid).First(&draft).RecordNotFound() {
 		draft.Content = content
 		draft.UserID = user.UID
 		draft.Title = title
+		draft.DraftID = uuid
 		db.Create(&draft)
 	} else {
-		db.Model(&draft).Where("DraftID = ?", uuid).Updates(map[string]interface{}{"Title": title, "Content": content})
+		db.Model(&draft).Where("draft_id = ?", uuid).Updates(map[string]interface{}{"Title": title, "Content": content})
 	}
 
 	c.JSON(200, gin.H{
