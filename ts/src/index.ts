@@ -37,7 +37,7 @@ const routes = [
   { path: '/profile', component: profile },
   { path: '/change/:state', component: change },
   { path: '/write', component: write },
-  {path:'/write/:id', component:write},
+  { path: '/write/:id', component: write },
 ];
 
 const vuetify = new Vuetify({});
@@ -50,20 +50,21 @@ new Vue({
     heads
   },
 
-  created: function () {
+  mounted: function () {
     this.isLogins();
   },
 
   methods: {
-    isLogins: function () {
-      const user = firebase.auth().currentUser;
-      if (user) {
-        this.$data.isLogin = new isLogin(true, user.displayName);
-      } else {
-        this.$data.isLogin = new isLogin(false, null);
-      }
-      console.log(user);
-    }
+    isLogins: function (this:Vue) {
+      let _this = this;
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          _this.$data.isLogin = new isLogin(true, user.displayName);
+        } else {
+          _this.$data.isLogin = new isLogin(false, null);
+        }
+      });
+    },
   },
 
   data: () => {

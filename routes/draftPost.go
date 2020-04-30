@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"later/database"
 	"later/firebase"
+	"log"
 )
 
 type draftJson struct {
@@ -23,12 +24,14 @@ func DraftPost(c *gin.Context) {
 
 	user, err := firebase.FirebaseUser(token)
 	if err != nil {
-
+		statusError(c, "ログインしていません")
+		log.Fatalln("user not login")
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
-
+		statusError(c, "データベースエラー")
+		log.Fatalln("database is closed")
 	}
 	defer db.Close()
 
@@ -43,6 +46,6 @@ func DraftPost(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
-		"status": "posted",
+		"status": "保存しました",
 	})
 }
