@@ -167,14 +167,16 @@ export default Vue.extend({
       }
     },
 
-    loginUser: function() {
+    loginUser:async function() {
       const email = this.$data.model.eMail;
       const passWord = this.$data.model.passWord;
       if (!this.judge(false)) {
         return;
       }
+
       try {
-        firebase.auth().signInWithEmailAndPassword(email, passWord);
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        await firebase.auth().signInWithEmailAndPassword(email, passWord);
         this.$emit("login");
         this.$router.push("/");
       } catch (err) {

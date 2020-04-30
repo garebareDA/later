@@ -37,6 +37,7 @@ const routes = [
   { path: '/profile', component: profile },
   { path: '/change/:state', component: change },
   { path: '/write', component: write },
+  {path:'/write/:id', component:write},
 ];
 
 const vuetify = new Vuetify({});

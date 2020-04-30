@@ -5,4 +5,5 @@ type Draft struct {
 	UserID string
 	Title string
 	Content string
+	DraftID string
 }

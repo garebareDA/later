@@ -21,6 +21,7 @@
 import Vue from "vue";
 import marked from "marked";
 import * as firebase from "firebase/app";
+import {v4 as uuidv4} from "uuid";
 import axios from "../../src/axiosPost";
 import "firebase/auth";
 
@@ -30,8 +31,20 @@ export default Vue.extend({
       text: "",
       title:"",
       markdown: "",
+      uuid:"",
       error:false
     };
+  },
+
+  created:function() {
+    const id = this.$route.params.id;
+    if (id === undefined){
+      this.$data.uuid = uuidv4();
+    }else if(id == ""){
+      this.$data.error = true;
+    }else{
+      this.$data.uuid = id;
+    }
   },
 
   methods:{
@@ -45,6 +58,7 @@ export default Vue.extend({
           token:token,
           title:this.$data.title,
           content:this.$data.text,
+          draftID:this.$data.uuid,
         };
         const err = axios.post(url, draftParams);
         if (!err){
