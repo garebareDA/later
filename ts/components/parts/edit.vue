@@ -10,7 +10,8 @@
           <div v-html="markdown"></div>
         </v-col>
       </v-row>
-      <v-btn outlined style="float: right;" v-on:click="draftPost">下書き保存</v-btn>
+      <v-btn v-if="posted == false" outlined style="float: right;" v-on:click="draftPost">下書き保存</v-btn>
+      <v-btn v-if="posted == true" outlined style="float: right;" disabled>下書き保存</v-btn>
       <v-btn outlined style="float: right;">公開</v-btn>
       <div v-if="error">{{errorMessage}}</div>
       <div v-if="post">保存しました</div>
@@ -35,7 +36,8 @@ export default Vue.extend({
       uuid: "",
       error: false,
       errorMessage: "",
-      post: false
+      post: false,
+      posted:false,
     };
   },
 
@@ -53,6 +55,7 @@ export default Vue.extend({
 
   methods: {
     draftPost: async function() {
+      this.$data.posted = true;
       const user = firebase.auth().currentUser;
       console.log(user);
       if (!user) {
@@ -78,6 +81,7 @@ export default Vue.extend({
           this.$data.error = true;
           this.$data.errorMessage = error;
         });
+        this.$data.posted = false;
     }
   },
 
