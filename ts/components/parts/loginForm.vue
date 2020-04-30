@@ -40,6 +40,7 @@
                 </v-card-actions>
 
                 <v-card-actions v-if="login.isLogin == 'recertification'">
+                  <v-btn outlined v-on:click="back()">戻る</v-btn>
                   <v-spacer />
                   <v-btn outlined v-on:click="recertification()">再ログイン</v-btn>
                 </v-card-actions>
@@ -211,7 +212,9 @@ export default Vue.extend({
       }
     },
 
-    auth: async function(email: string, password: string) {}
+    back:function() {
+      this.$emit("back");
+    }
   },
 
   data: () => {

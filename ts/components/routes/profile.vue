@@ -1,6 +1,9 @@
 <template>
   <div>
-    <loginProfile v-if="auth == true" :login="isLogin" @auth="push()"></loginProfile>
+    <div v-if="auth == true">
+      <loginProfile :login="isLogin" @auth="push()" @back="back()"></loginProfile>
+    </div>
+
     <v-content v-if="auth == false">
       <v-container>
         <v-card class="mx-auto" max-width="500">
@@ -37,13 +40,13 @@
 import Vue from "vue";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import Login from '../../src/login';
-import loginProfile from '../parts/loginForm.vue';
+import Login from "../../src/login";
+import loginProfile from "../parts/loginForm.vue";
 
 const isLogin = new Login("recertification");
 export default Vue.extend({
   methods: {
-    logout:async function() {
+    logout: async function() {
       const user = firebase.auth().currentUser;
       if (user) {
         try {
@@ -58,43 +61,47 @@ export default Vue.extend({
       }
     },
 
-    changeName:function() {
+    changeName: function() {
       this.$data.change = "name";
       this.$data.auth = true;
     },
 
-    changeEmail:function() {
+    changeEmail: function() {
       this.$data.change = "email";
       this.$data.auth = true;
     },
 
-    changePassword:function() {
+    changePassword: function() {
       this.$data.change = "password";
       this.$data.auth = true;
     },
 
-    push:function() {
+    push: function() {
       this.$router.push("change/" + this.$data.change);
+    },
+
+    back: function() {
+      this.$data.auth = false;
     }
   },
 
-  created:function(){
+  created: function() {
     const user = firebase.auth().currentUser;
-    if(!user){
-      this.$router.push('/');
+    if (!user) {
+      this.$router.push("/");
     }
   },
 
   components: {
-    loginProfile,
+    loginProfile
   },
 
   data: () => {
     return {
       error: false,
-      auth:false,
-      change:"",
-      isLogin:isLogin,
+      auth: false,
+      change: "",
+      isLogin: isLogin
     };
   }
 });

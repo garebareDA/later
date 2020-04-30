@@ -55,7 +55,7 @@ new Vue({
   },
 
   methods: {
-    isLogins: function (this:Vue) {
+    isLogins: function () {
       let _this = this;
       firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
