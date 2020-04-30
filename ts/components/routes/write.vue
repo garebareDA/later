@@ -20,7 +20,7 @@
 
             <v-tab-item>
               <v-card flat>
-                <v-card-text>下書き</v-card-text>
+                <drafts/>
               </v-card>
             </v-tab-item>
 
@@ -38,9 +38,11 @@
 <script lang="ts">
 import Vue from "vue";
 import editor from "../parts/edit.vue";
+import drafts from "../parts/drafts.vue";
 export default Vue.extend({
   components:{
-    editor
+    editor,
+    drafts
   },
 });
 </script>

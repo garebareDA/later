@@ -1,6 +1,5 @@
 <template>
   <div>
-    <v-container>
       <v-text-field label="タイトル" type="text" v-model="title" />
       <v-row>
         <v-col>
@@ -15,7 +14,6 @@
       <v-btn outlined style="float: right;">公開</v-btn>
       <div v-if="error">{{errorMessage}}</div>
       <div v-if="post">保存しました</div>
-    </v-container>
   </div>
 </template>
 
