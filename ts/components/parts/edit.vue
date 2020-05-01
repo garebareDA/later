@@ -9,6 +9,8 @@
         <div v-html="markdown"></div>
       </v-col>
     </v-row>
+    <div v-if="error" style="float: right;">{{errorMessage}}</div>
+    <div v-if="post" style="float: right;">{{foundMessage}}</div>
     <v-btn
       v-if="posted == false"
       outlined
@@ -25,8 +27,7 @@
       v-on:click="publicPost"
     >公開</v-btn>
     <v-btn v-if="posted == true" outlined style="float: right;" class="ma-2">公開</v-btn>
-    <div v-if="error">{{errorMessage}}</div>
-    <div v-if="post">保存しました</div>
+
   </div>
 </template>
 
@@ -48,7 +49,8 @@ export default Vue.extend({
       error: false,
       errorMessage: "",
       post: false,
-      posted: false
+      posted: false,
+      foundMessage:"",
     };
   },
 
@@ -84,8 +86,9 @@ export default Vue.extend({
       };
       axios
         .post(url, draftParams)
-        .then(() => {
+        .then((res) => {
           this.$data.post = true;
+          this.$data.foundMessage = res.data.status;
         })
         .catch(error => {
           this.$data.error = true;
@@ -114,8 +117,9 @@ export default Vue.extend({
       };
       axios
         .post(url, draftParams)
-        .then(() => {
+        .then((res) => {
           this.$data.post = true;
+          this.$data.foundMessage = res.data.status;
         })
         .catch(error => {
           this.$data.error = true;

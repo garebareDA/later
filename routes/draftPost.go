@@ -22,6 +22,10 @@ func DraftPost(c *gin.Context) {
 	content := draftPosted.Content
 	uuid := draftPosted.DraftID
 
+	if title == ""{
+		title = "Non Title"
+	}
+
 	user, err := firebase.FirebaseUser(token)
 	if err != nil {
 		statusError(c, "ログインしていません")
