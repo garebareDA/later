@@ -1,19 +1,32 @@
 <template>
   <div>
-      <v-text-field label="タイトル" type="text" v-model="title" />
-      <v-row>
-        <v-col>
-          <v-textarea filled label="※MarkDown記法で書いてください" auto-grow v-model="text"></v-textarea>
-        </v-col>
-        <v-col>
-          <div v-html="markdown"></div>
-        </v-col>
-      </v-row>
-      <v-btn v-if="posted == false" outlined style="float: right;" v-on:click="draftPost" class="ma-2" >下書き保存</v-btn>
-      <v-btn v-if="posted == true" outlined style="float: right;" disabled class="ma-2" >下書き保存</v-btn>
-      <v-btn outlined style="float: right;" class="ma-2" >公開</v-btn>
-      <div v-if="error">{{errorMessage}}</div>
-      <div v-if="post">保存しました</div>
+    <v-text-field label="タイトル" type="text" v-model="title" />
+    <v-row>
+      <v-col>
+        <v-textarea filled label="※MarkDown記法で書いてください" auto-grow v-model="text"></v-textarea>
+      </v-col>
+      <v-col>
+        <div v-html="markdown"></div>
+      </v-col>
+    </v-row>
+    <v-btn
+      v-if="posted == false"
+      outlined
+      style="float: right;"
+      v-on:click="draftPost"
+      class="ma-2"
+    >下書き保存</v-btn>
+    <v-btn v-if="posted == true" outlined style="float: right;" disabled class="ma-2">下書き保存</v-btn>
+    <v-btn
+      v-if="posted == false"
+      outlined
+      style="float: right;"
+      class="ma-2"
+      v-on:click="publicPost"
+    >公開</v-btn>
+    <v-btn v-if="posted == true" outlined style="float: right;" class="ma-2">公開</v-btn>
+    <div v-if="error">{{errorMessage}}</div>
+    <div v-if="post">保存しました</div>
   </div>
 </template>
 
@@ -35,7 +48,7 @@ export default Vue.extend({
       error: false,
       errorMessage: "",
       post: false,
-      posted:false,
+      posted: false
     };
   },
 
@@ -55,7 +68,6 @@ export default Vue.extend({
     draftPost: async function() {
       this.$data.posted = true;
       const user = firebase.auth().currentUser;
-      console.log(user);
       if (!user) {
         this.$data.error = true;
         this.$data.errorMessage = "ログインしていません";
@@ -79,7 +91,37 @@ export default Vue.extend({
           this.$data.error = true;
           this.$data.errorMessage = error;
         });
-        this.$data.posted = false;
+      this.$data.posted = false;
+    },
+
+    publicPost: async function() {
+      this.$data.posted = true;
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        this.$data.error = true;
+        this.$data.errorMessage = "ログインしていません";
+        return;
+      }
+      this.$data.error = false;
+      const token = await user.getIdToken(true);
+
+      const url = "/public";
+      const draftParams = {
+        token: token,
+        title: this.$data.title,
+        content: this.$data.text,
+        uuid: this.$data.uuid
+      };
+      axios
+        .post(url, draftParams)
+        .then(() => {
+          this.$data.post = true;
+        })
+        .catch(error => {
+          this.$data.error = true;
+          this.$data.errorMessage = error;
+        });
+      this.$data.posted = false;
     }
   },
 

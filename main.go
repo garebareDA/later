@@ -15,6 +15,7 @@ func main() {
 	defer db.Close()
 
 	db.CreateTable(&database.Draft{})
+	db.CreateTable(&database.Public{});
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
@@ -22,5 +23,6 @@ func main() {
 
 	router.GET("/", routes.Home)
 	router.POST("/draft", routes.DraftPost)
+	router.POST("/public", routes.PublicPost)
 	router.Run(":8000")
 }

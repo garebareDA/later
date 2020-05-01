@@ -35,6 +35,12 @@ func DraftPost(c *gin.Context) {
 	}
 	defer db.Close()
 
+	public := database.Public{}
+	if !db.Where("uuid = ?", uuid).First(&public).RecordNotFound() {
+		statusError(c, "公開してあるため下書きには保存できません")
+		log.Println("was public")
+	}
+
 	draft := database.Draft{}
 	if db.Where("draft_id = ?", uuid).First(&draft).RecordNotFound() {
 		draft.Content = content
