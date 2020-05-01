@@ -3,6 +3,7 @@ import * as firebase from 'firebase/app';
 import Vue from 'vue';
 import Router from 'vue-router';
 import Vuetify from 'vuetify';
+import InfiniteLoading from 'vue-infinite-loading'
 import 'vuetify/dist/vuetify.min.css';
 
 import { default as home } from '../components/routes/home.vue';
@@ -29,6 +30,7 @@ firebase.initializeApp(firebaseConfig);
 
 Vue.use(Router);
 Vue.use(Vuetify);
+Vue.use(InfiniteLoading);
 
 const routes = [
   { path: '/', component: home },

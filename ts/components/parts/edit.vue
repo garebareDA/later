@@ -35,8 +35,8 @@
 import Vue from "vue";
 import marked from "marked";
 import * as firebase from "firebase/app";
-import { v4 as uuidv4 } from "uuid";
 import "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 export default Vue.extend({

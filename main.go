@@ -22,6 +22,7 @@ func main() {
 	router.Static("static", "./static/")
 
 	router.GET("/", routes.Home)
+	router.GET("/drafts",routes.DraftsIfinite)
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)
 	router.Run(":8000")
