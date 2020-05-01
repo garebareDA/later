@@ -9,9 +9,9 @@
           <div v-html="markdown"></div>
         </v-col>
       </v-row>
-      <v-btn v-if="posted == false" outlined style="float: right;" v-on:click="draftPost">下書き保存</v-btn>
-      <v-btn v-if="posted == true" outlined style="float: right;" disabled>下書き保存</v-btn>
-      <v-btn outlined style="float: right;">公開</v-btn>
+      <v-btn v-if="posted == false" outlined style="float: right;" v-on:click="draftPost" class="ma-2" >下書き保存</v-btn>
+      <v-btn v-if="posted == true" outlined style="float: right;" disabled class="ma-2" >下書き保存</v-btn>
+      <v-btn outlined style="float: right;" class="ma-2" >公開</v-btn>
       <div v-if="error">{{errorMessage}}</div>
       <div v-if="post">保存しました</div>
   </div>
