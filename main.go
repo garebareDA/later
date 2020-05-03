@@ -25,5 +25,6 @@ func main() {
 	router.GET("/drafts",routes.DraftsIfinite)
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)
+	router.DELETE("/draft/remove", routes.RemoveDraft)
 	router.Run(":8000")
 }

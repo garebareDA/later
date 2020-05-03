@@ -22,31 +22,35 @@ func PublicPost(c *gin.Context) {
 	content := publicJson.Content
 	uuid := publicJson.UUID
 
-	if title == ""{
-		title = "Non Title"
+	if content == "" {
+		log.Println("content is empty")
+		statusError(c, "記事の中身がからです")
 	}
 
-	if content == ""{
-		statusError(c, "記事の中身が空です")
-		log.Println("Non Content")
+	if title == "" {
+		log.Println("title is empty")
+		statusError(c, "タイトルがからです")
 	}
 
 	user, err := firebase.FirebaseToken(token)
 	if err != nil {
-		statusError(c, "ログインしていません")
 		log.Println("user not login")
+		statusError(c, "ログインしていません")
+
 	}
 
 	profile, err := firebase.FirebaseUser(token)
 	if err != nil {
-		statusError(c, "ログインしていません")
 		log.Println("user not login")
+		statusError(c, "ログインしていません")
+
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
-		statusError(c, "データベースエラー")
 		log.Println("database is closed")
+		statusError(c, "データベースエラー")
+
 	}
 	defer db.Close()
 

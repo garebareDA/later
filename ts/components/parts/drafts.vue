@@ -10,8 +10,12 @@
                   <v-list-item>
                     <v-list-item-title>{{item.Title}}</v-list-item-title>
                     <v-spacer />
-                    <v-btn class="ma-2" outlined>編集</v-btn>
-                    <v-btn class="ma-2" outlined>削除</v-btn>
+                    <v-btn
+                      class="ma-2"
+                      outlined
+                      v-on:click="startEdit(item.Id, item.Title, item.Content)"
+                    >編集</v-btn>
+                    <v-btn class="ma-2" outlined v-on:click="removeDraft(item.Id)">削除</v-btn>
                   </v-list-item>
                   <v-divider />
                 </div>
@@ -34,7 +38,6 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 
 export default Vue.extend({
-  created: function() {},
   methods: {
     infiniteHandler: async function($state: any) {
       const user = firebase.auth().currentUser;
@@ -51,6 +54,7 @@ export default Vue.extend({
       axios
         .get(url, { params: params })
         .then(res => {
+          console.log(res);
           this.$data.list.push(...res.data);
           if (res.data.length < 10) {
             $state.complete();
@@ -58,6 +62,33 @@ export default Vue.extend({
         })
         .catch(err => {
           console.log(err);
+        });
+    },
+
+    startEdit: function(uuid: string, title: string, content: string) {
+      this.$emit("change", uuid, title, content);
+    },
+
+    removeDraft: async function(uuid: string) {
+      this.$data.posted = true;
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        return;
+      }
+      this.$data.error = false;
+      const token = await user.getIdToken(true);
+      const url = "/draft/remove";
+      const params = {
+        uuid: uuid,
+        token: token
+      };
+      axios
+        .delete(url, { data: params })
+        .then(res => {
+          this.$data.list = [];
+        })
+        .catch(error => {
+          this.$router.push("/");
         });
     }
   },

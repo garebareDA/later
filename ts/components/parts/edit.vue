@@ -9,54 +9,65 @@
         <div v-html="markdown"></div>
       </v-col>
     </v-row>
-    <div v-if="error" style="float: right;">{{errorMessage}}</div>
-    <div v-if="post" style="float: right;">{{foundMessage}}</div>
-    <v-btn
-      v-if="posted == false"
-      outlined
-      style="float: right;"
-      v-on:click="draftPost"
-      class="ma-2"
-    >下書き保存</v-btn>
-    <v-btn v-if="posted == true" outlined style="float: right;" disabled class="ma-2">下書き保存</v-btn>
-    <v-btn
-      v-if="posted == false"
-      outlined
-      style="float: right;"
-      class="ma-2"
-      v-on:click="publicPost"
-    >公開</v-btn>
-    <v-btn v-if="posted == true" outlined style="float: right;" class="ma-2">公開</v-btn>
+    <v-row style="float: right;">
+      <div v-if="error" style="float: right; ma-2">{{errorMessage}}</div>
+      <div v-if="post" style="float: right; ma-2">{{foundMessage}}</div>
+      <v-btn
+        v-if="posted == false"
+        outlined
+        style="float: right;"
+        v-on:click="draftPost"
+        class="ma-2"
+      >下書き保存</v-btn>
+      <v-btn v-if="posted == true" outlined style="float: right;" disabled class="ma-2">下書き保存</v-btn>
+      <v-btn
+        v-if="posted == false"
+        outlined
+        style="float: right;"
+        class="ma-2"
+        v-on:click="publicPost"
+      >公開</v-btn>
+      <v-btn v-if="posted == true" disabled  outlined style="float: right;" class="ma-2">公開</v-btn>
+    </v-row>
 
+    <v-row style="float: left;">
+      <v-btn outlined style="float: left;" class="ma-2" v-on:click="newEdit">新規作成</v-btn>
+    </v-row>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import marked from "marked";
+import sanitize from "sanitize-html";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 export default Vue.extend({
+  props: ["texts", "titles", "uuids"],
+
   data: () => {
     return {
       text: "",
       title: "",
+      uuid: null,
       markdown: "",
-      uuid: "",
       error: false,
       errorMessage: "",
       post: false,
       posted: false,
-      foundMessage:"",
+      foundMessage: ""
     };
   },
 
   created: function() {
-    const id = this.$route.params.id;
-    if (id === undefined) {
+    const id = this.uuids;
+    this.$data.text = this.texts;
+    this.$data.title = this.titles;
+
+    if (id === null) {
       this.$data.uuid = uuidv4();
     } else if (id == "") {
       this.$data.error = true;
@@ -86,7 +97,7 @@ export default Vue.extend({
       };
       axios
         .post(url, draftParams)
-        .then((res) => {
+        .then(res => {
           this.$data.post = true;
           this.$data.foundMessage = res.data.status;
         })
@@ -117,23 +128,34 @@ export default Vue.extend({
       };
       axios
         .post(url, draftParams)
-        .then((res) => {
+        .then(res => {
           this.$data.post = true;
           this.$data.foundMessage = res.data.status;
         })
         .catch(error => {
           this.$data.error = true;
+          this.$data.posted = false;
           this.$data.errorMessage = error;
         });
-      this.$data.posted = false;
+    },
+    newEdit: function() {
+      this.$data.uuid = uuidv4();
+      this.$data.text = "";
+      this.$data.title = "";
     }
   },
 
   watch: {
     text: function() {
-      const html = marked(this.$data.text, { sanitize: true, breaks: true });
-      this.$data.markdown = html;
+      const html = marked(this.$data.text, { breaks: true });
+      this.$data.markdown = sanitize(html);
       this.$data.post = false;
+    },
+
+    texts: function() {
+      this.$data.uuid = this.uuids;
+      this.$data.text = this.texts;
+      this.$data.title = this.titles;
     }
   }
 });

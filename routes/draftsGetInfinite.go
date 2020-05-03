@@ -1,4 +1,5 @@
 package routes
+
 import (
 	"github.com/gin-gonic/gin"
 	"later/database"
@@ -8,42 +9,46 @@ import (
 )
 
 type draftGet struct {
-	Id   string    `json: "id"`
-	Title string `json: "title"`
+	Id      string `json: "id"`
+	Title   string `json: "title"`
+	Content string `json: "content"`
 }
 
 func DraftsIfinite(c *gin.Context) {
 	get := c.Query("number")
 	token := c.Query("token")
 
-	if get == "" || token == ""{
-		statusError(c, "エラー")
+	if get == "" || token == "" {
 		log.Println("user not login")
+		statusError(c, "エラー")
 	}
 
 	user, err := firebase.FirebaseToken(token)
 	if err != nil {
-		statusError(c, "ログインしていません")
 		log.Println("user not login")
+		statusError(c, "ログインしていません")
+
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
-		statusError(c, "データベースエラー")
 		log.Println("database is closed")
+		statusError(c, "データベースエラー")
+
 	}
 	defer db.Close()
 
 	getNumber, err := strconv.Atoi(get)
 	if err != nil {
+		log.Println("number error")
 		statusError(c, "number error")
 	}
 
 	drafts := []database.Draft{}
 	getDrafts := []draftGet{}
-	db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber -10, get).Find(&drafts)
-	for _, draft := range drafts{
-		getDrafts = append(getDrafts,draftGet{Id:draft.DraftID, Title:draft.Title})
+	db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&drafts)
+	for _, draft := range drafts {
+		getDrafts = append(getDrafts, draftGet{Id: draft.DraftID, Title: draft.Title, Content: draft.Content})
 	}
 	c.JSON(200, getDrafts)
 }
