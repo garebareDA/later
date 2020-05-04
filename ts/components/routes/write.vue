@@ -16,13 +16,13 @@
 
           <v-tab-item value="item">
             <v-card flat>
-              <drafts @reload="itemRelaod" v-if="reload.tiem"/>
+              <drafts @change="changeToEdit" @reload="itemRelaod"  v-if="reload.item == true" :parts="'item'"/>
             </v-card>
           </v-tab-item>
 
           <v-tab-item value="draft" >
             <v-card flat>
-              <drafts @change="changeToEdit" @reload="draftRelaod" v-if="reload.draft"/>
+              <drafts @change="changeToEdit" @reload="draftRelaod" v-if="reload.draft == true" :parts="'draft'"/>
             </v-card>
           </v-tab-item>
 
@@ -48,6 +48,7 @@ export default Vue.extend({
       text: "",
       uuid: null,
       tabs: "edit",
+      
       reload:{
         draft:true,
         item:true,
@@ -68,13 +69,23 @@ export default Vue.extend({
       this.$data.reload.draft = false;
       await this.$nextTick();
       this.$data.reload.draft = true;
+    },
+
+    itemRelaod:async function(){
+      this.$data.reload.item = false;
+      await this.$nextTick();
+      this.$data.reload.item = true;
     }
   },
 
   watch:{
     tabs:function() {
-      if (this.$data.tabs == "draft"){
+      if (this.$data.tabs === "draft"){
         this.draftRelaod();
+      }
+
+      if(this.$data.tabs === "item"){
+        this.itemRelaod();
       }
     }
   },

@@ -11,21 +11,19 @@
     </v-row>
     <v-row style="float: right;">
       <v-btn
-        v-if="posted == false"
         outlined
         style="float: right;"
         v-on:click="draftPost"
         class="ma-2"
+        :disabled="posted == true"
       >下書き保存</v-btn>
-      <v-btn v-if="posted == true" outlined style="float: right;" disabled class="ma-2">下書き保存</v-btn>
       <v-btn
-        v-if="posted == false"
         outlined
         style="float: right;"
         class="ma-2"
         v-on:click="publicPost"
+        :disabled="posted == true"
       >公開</v-btn>
-      <v-btn v-if="posted == true" disabled outlined style="float: right;" class="ma-2">公開</v-btn>
     </v-row>
 
     <v-row style="float: left;">

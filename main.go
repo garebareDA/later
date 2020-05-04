@@ -23,8 +23,10 @@ func main() {
 
 	router.GET("/", routes.Home)
 	router.GET("/drafts",routes.DraftsIfinite)
+	router.GET("/publics", routes.PublicInfnite)
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)
 	router.DELETE("/draft/remove", routes.RemoveDraft)
+	router.DELETE("/public/remove", routes.RemovePublic)
 	router.Run(":8000")
 }
