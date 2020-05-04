@@ -11,7 +11,7 @@
 
         <v-tabs-items v-model="tabs">
           <v-tab-item value="edit">
-            <editor :titles="title" :texts="text" :uuids="uuid"/>
+            <editor :titles="title" :texts="text" :uuids="uuid" @drafts="updateDrafts" @publics="updatePublic"/>
           </v-tab-item>
 
           <v-tab-item value="item">
@@ -48,7 +48,10 @@ export default Vue.extend({
       text: "",
       uuid: null,
       tabs: "edit",
-      
+      update:{
+        draft:false,
+        item:false,
+      },
       reload:{
         draft:true,
         item:true,
@@ -75,17 +78,28 @@ export default Vue.extend({
       this.$data.reload.item = false;
       await this.$nextTick();
       this.$data.reload.item = true;
+    },
+    updateDrafts:function(){
+      this.$data.update.draft = true;
+    },
+    updatePublic:function(){
+      this.$data.update.draft = true;
+      this.$data.update.item = true;
     }
   },
 
   watch:{
     tabs:function() {
-      if (this.$data.tabs === "draft"){
+      const draftIsUpdate = this.$data.update.draft;
+      if (this.$data.tabs === "draft" && draftIsUpdate){
         this.draftRelaod();
+        this.$data.update.draft = false;
       }
 
-      if(this.$data.tabs === "item"){
+      const itemIsUpdate = this.$data.update.item;
+      if(this.$data.tabs === "item" && itemIsUpdate){
         this.itemRelaod();
+        this.$data.update.item = false;
       }
     }
   },

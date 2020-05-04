@@ -101,6 +101,7 @@ export default Vue.extend({
             this.$data.posted = false;
             this.$data.foundMessage = res.data.status;
             this.$data.errorMessage = "";
+            this.$emit("drafts");
           })
           .catch(error => {
             this.$data.error = true;
@@ -135,6 +136,7 @@ export default Vue.extend({
             this.$data.posted = false;
             this.$data.foundMessage = res.data.status;
             this.$data.errorMessage = "";
+            this.$emit("publics");
           })
           .catch(error => {
             this.$data.error = true;
