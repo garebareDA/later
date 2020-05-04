@@ -54,13 +54,11 @@ export default Vue.extend({
       axios
         .get(url, { params: params })
         .then(res => {
-          console.log(res);
           this.$data.list.push(...res.data);
-          if (res.data.length < 10) {
-            $state.complete();
-          }
+          $state.loaded();
         })
         .catch(err => {
+          $state.complete();
           console.log(err);
         });
     },
@@ -85,7 +83,7 @@ export default Vue.extend({
       axios
         .delete(url, { data: params })
         .then(res => {
-          this.$data.list = [];
+          this.$emit("reload");
         })
         .catch(error => {
           this.$router.push("/");

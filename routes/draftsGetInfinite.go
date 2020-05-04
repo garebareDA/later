@@ -34,7 +34,6 @@ func DraftsIfinite(c *gin.Context) {
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー")
-
 	}
 	defer db.Close()
 
@@ -46,7 +45,18 @@ func DraftsIfinite(c *gin.Context) {
 
 	drafts := []database.Draft{}
 	getDrafts := []draftGet{}
-	db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&drafts)
+	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&drafts).Error
+
+	if err != nil {
+		log.Println("get number error")
+		statusError(c, "データベースエラー")
+	}
+
+	if len(drafts) == 0 {
+		log.Println("arry is empty")
+		c.JSON(400, "配列が0です")
+	}
+
 	for _, draft := range drafts {
 		getDrafts = append(getDrafts, draftGet{Id: draft.DraftID, Title: draft.Title, Content: draft.Content})
 	}

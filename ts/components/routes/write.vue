@@ -6,12 +6,12 @@
           <v-tab href="#edit">記事を書く</v-tab>
           <v-tab href="#item">書いた記事</v-tab>
           <v-tab href="#draft">下書き</v-tab>
-          <v-tab heref="#like">いいねした記事</v-tab>
+          <v-tab href="#like">いいねした記事</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tabs">
           <v-tab-item value="edit">
-            <editor :titles="title" :texts="text" :uuids="uuid" />
+            <editor :titles="title" :texts="text" :uuids="uuid"/>
           </v-tab-item>
 
           <v-tab-item value="item">
@@ -22,7 +22,7 @@
 
           <v-tab-item value="draft">
             <v-card flat>
-              <drafts @change="changeToEdit" />
+              <drafts @change="changeToEdit" @reload="draftRelaod" v-if="reload.draft"/>
             </v-card>
           </v-tab-item>
 
@@ -47,7 +47,12 @@ export default Vue.extend({
       title: "",
       text: "",
       uuid: null,
-      tabs: "edit"
+      tabs: "edit",
+      reload:{
+        draft:true,
+        item:true,
+        like:true,
+      }
     };
   },
 
@@ -57,6 +62,12 @@ export default Vue.extend({
       this.$data.text = content;
       this.$data.uuid = uuid;
       this.$data.tabs = "edit";
+    },
+
+    draftRelaod:async function(){
+      this.$data.reload.draft = false;
+      await this.$nextTick();
+      this.$data.reload.draft = true;
     }
   },
 
