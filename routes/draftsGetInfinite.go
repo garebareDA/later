@@ -9,7 +9,7 @@ import (
 )
 
 type draftGet struct {
-	Id      string `json: "id"`
+	ID      string `json: "id"`
 	Title   string `json: "title"`
 	Content string `json: "content"`
 }
@@ -45,8 +45,8 @@ func DraftsIfinite(c *gin.Context) {
 
 	drafts := []database.Draft{}
 	getDrafts := []draftGet{}
-	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&drafts).Error
 
+	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&drafts).Error
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー")
@@ -54,11 +54,13 @@ func DraftsIfinite(c *gin.Context) {
 
 	if len(drafts) == 0 {
 		log.Println("arry is empty")
-		c.JSON(400, "配列が0です")
+		c.JSON(404, "配列が0です")
+		c.Abort()
 	}
 
 	for _, draft := range drafts {
-		getDrafts = append(getDrafts, draftGet{Id: draft.DraftID, Title: draft.Title, Content: draft.Content})
+		getDrafts = append(getDrafts, draftGet{ID: draft.DraftID, Title: draft.Title, Content: draft.Content})
 	}
+
 	c.JSON(200, getDrafts)
 }

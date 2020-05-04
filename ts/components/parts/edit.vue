@@ -3,15 +3,13 @@
     <v-text-field label="タイトル" type="text" v-model="title" />
     <v-row>
       <v-col>
-        <v-textarea filled label="※MarkDown記法で書いてください" auto-grow v-model="text"></v-textarea>
+        <v-textarea filled label="※MarkDown記法で書いてください" auto-grow v-model="text" class="ma-2"></v-textarea>
       </v-col>
       <v-col>
-        <div v-html="markdown"></div>
+        <div v-html="markdown" lass="ma-3"></div>
       </v-col>
     </v-row>
     <v-row style="float: right;">
-      <div v-if="error" style="float: right; ma-2">{{errorMessage}}</div>
-      <div v-if="post" style="float: right; ma-2">{{foundMessage}}</div>
       <v-btn
         v-if="posted == false"
         outlined
@@ -27,12 +25,15 @@
         class="ma-2"
         v-on:click="publicPost"
       >公開</v-btn>
-      <v-btn v-if="posted == true" disabled  outlined style="float: right;" class="ma-2">公開</v-btn>
+      <v-btn v-if="posted == true" disabled outlined style="float: right;" class="ma-2">公開</v-btn>
     </v-row>
 
     <v-row style="float: left;">
       <v-btn outlined style="float: left;" class="ma-2" v-on:click="newEdit">新規作成</v-btn>
     </v-row>
+
+    <div v-if="error" style="float: right;" class="ma-2">{{errorMessage}}</div>
+    <div v-if="post" style="float: right;" class="ma-2">{{foundMessage}}</div>
   </div>
 </template>
 
@@ -87,25 +88,29 @@ export default Vue.extend({
         return;
       }
       this.$data.error = false;
-      const token = await user.getIdToken(true);
-      const url = "/draft";
-      const draftParams = {
-        token: token,
-        title: this.$data.title,
-        content: this.$data.text,
-        draftID: this.$data.uuid
-      };
-      axios
-        .post(url, draftParams)
-        .then(res => {
-          this.$data.post = true;
-          this.$data.foundMessage = res.data.status;
-        })
-        .catch(error => {
-          this.$data.error = true;
-          this.$data.errorMessage = error;
-        });
-      this.$data.posted = false;
+      user.getIdToken(true).then(token => {
+        const url = "/draft";
+        const draftParams = {
+          token: token,
+          title: this.$data.title,
+          content: this.$data.text,
+          draftID: this.$data.uuid
+        };
+        axios
+          .post(url, draftParams)
+          .then(res => {
+            this.$data.post = true;
+            this.$data.posted = false;
+            this.$data.foundMessage = res.data.status;
+            this.$data.errorMessage = "";
+          })
+          .catch(error => {
+            this.$data.error = true;
+            this.$data.posted = false;
+            this.$data.errorMessage = error;
+            this.$data.foundMessage = "";
+          });
+      });
     },
 
     publicPost: async function() {
@@ -117,26 +122,29 @@ export default Vue.extend({
         return;
       }
       this.$data.error = false;
-      const token = await user.getIdToken(true);
-
-      const url = "/public";
-      const draftParams = {
-        token: token,
-        title: this.$data.title,
-        content: this.$data.text,
-        uuid: this.$data.uuid
-      };
-      axios
-        .post(url, draftParams)
-        .then(res => {
-          this.$data.post = true;
-          this.$data.foundMessage = res.data.status;
-        })
-        .catch(error => {
-          this.$data.error = true;
-          this.$data.posted = false;
-          this.$data.errorMessage = error;
-        });
+      user.getIdToken(true).then(token => {
+        const url = "/public";
+        const draftParams = {
+          token: token,
+          title: this.$data.title,
+          content: this.$data.text,
+          uuid: this.$data.uuid
+        };
+        axios
+          .post(url, draftParams)
+          .then(res => {
+            this.$data.post = true;
+            this.$data.posted = false;
+            this.$data.foundMessage = res.data.status;
+            this.$data.errorMessage = "";
+          })
+          .catch(error => {
+            this.$data.error = true;
+            this.$data.posted = false;
+            this.$data.foundMessage = "";
+            this.$data.errorMessage = error;
+          });
+      });
     },
     newEdit: function() {
       this.$data.uuid = uuidv4();

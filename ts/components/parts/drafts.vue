@@ -13,9 +13,9 @@
                     <v-btn
                       class="ma-2"
                       outlined
-                      v-on:click="startEdit(item.Id, item.Title, item.Content)"
+                      v-on:click="startEdit(item.ID, item.Title, item.Content)"
                     >編集</v-btn>
-                    <v-btn class="ma-2" outlined v-on:click="removeDraft(item.Id)">削除</v-btn>
+                    <v-btn class="ma-2" outlined v-on:click="removeDraft(item.ID)">削除</v-btn>
                   </v-list-item>
                   <v-divider />
                 </div>
@@ -44,23 +44,25 @@ export default Vue.extend({
       if (!user) {
         return;
       }
-      const token = await user.getIdToken(true);
-      this.$data.getNumber += 10;
-      const url = "/drafts";
-      const params = {
-        number: this.$data.getNumber,
-        token: token
-      };
-      axios
-        .get(url, { params: params })
-        .then(res => {
-          this.$data.list.push(...res.data);
-          $state.loaded();
-        })
-        .catch(err => {
-          $state.complete();
-          console.log(err);
-        });
+
+      user.getIdToken(true).then(token => {
+        this.$data.getNumber += 10;
+        const url = "/drafts";
+        const params = {
+          number: this.$data.getNumber,
+          token: token
+        };
+        axios
+          .get(url, { params: params })
+          .then(res => {
+            this.$data.list.push(...res.data);
+            $state.loaded();
+          })
+          .catch(err => {
+            $state.complete();
+            console.log(err);
+          });
+      });
     },
 
     startEdit: function(uuid: string, title: string, content: string) {
@@ -74,20 +76,21 @@ export default Vue.extend({
         return;
       }
       this.$data.error = false;
-      const token = await user.getIdToken(true);
-      const url = "/draft/remove";
-      const params = {
-        uuid: uuid,
-        token: token
-      };
-      axios
-        .delete(url, { data: params })
-        .then(res => {
-          this.$emit("reload");
-        })
-        .catch(error => {
-          this.$router.push("/");
-        });
+      user.getIdToken(true).then(token => {
+        const url = "/draft/remove";
+        const params = {
+          uuid: uuid,
+          token: token
+        };
+        axios
+          .delete(url, { data: params })
+          .then(res => {
+            this.$emit("reload");
+          })
+          .catch(error => {
+            this.$router.push("/");
+          });
+      });
     }
   },
 

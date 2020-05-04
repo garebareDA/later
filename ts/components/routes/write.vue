@@ -16,11 +16,11 @@
 
           <v-tab-item value="item">
             <v-card flat>
-              <v-card-text>記事</v-card-text>
+              <drafts @reload="itemRelaod" v-if="reload.tiem"/>
             </v-card>
           </v-tab-item>
 
-          <v-tab-item value="draft">
+          <v-tab-item value="draft" >
             <v-card flat>
               <drafts @change="changeToEdit" @reload="draftRelaod" v-if="reload.draft"/>
             </v-card>
@@ -68,6 +68,14 @@ export default Vue.extend({
       this.$data.reload.draft = false;
       await this.$nextTick();
       this.$data.reload.draft = true;
+    }
+  },
+
+  watch:{
+    tabs:function() {
+      if (this.$data.tabs == "draft"){
+        this.draftRelaod();
+      }
     }
   },
 
