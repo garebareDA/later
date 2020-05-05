@@ -2,15 +2,15 @@
   <div>
     <v-navigation-drawer v-model="drawer" app clipped>
       <v-list dense>
-        <v-list-item link v-on:click="push('/')">
+        <v-list-item link to="/">
           <v-list-item-title>見る</v-list-item-title>
         </v-list-item>
 
-        <v-list-item link v-if="islogin.is == true"  v-on:click="push('write')">
+        <v-list-item link v-if="islogin.is == true"  to="/write">
           <v-list-item-title>書く</v-list-item-title>
         </v-list-item>
 
-        <v-list-item link v-on:click="push('profile')" v-if="islogin.is == true">
+        <v-list-item link v-if="islogin.is == true" to="/profile">
           <v-list-item-title>プロフィール</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -20,7 +20,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Later</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn depressed v-on:click="push('login')" v-if="islogin.is == false">
+      <v-btn depressed v-if="islogin.is == false" to="/login">
         <span>ログイン</span>
       </v-btn>
 
@@ -48,11 +48,5 @@ export default Vue.extend({
   data: () => ({
     drawer: false,
   }),
-
-  methods: {
-    push: function(url: string) {
-      this.$router.push(url);
-    }
-  }
 });
 </script>

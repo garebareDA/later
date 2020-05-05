@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from "vue";
 import marked from "marked";
-import sanitize from "sanitize-html";
+import createDOMPurify  from "dompurify";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
@@ -156,7 +156,7 @@ export default Vue.extend({
   watch: {
     text: function() {
       const html = marked(this.$data.text, { breaks: true });
-      this.$data.markdown = sanitize(html);
+      this.$data.markdown = createDOMPurify.sanitize(html);
       this.$data.post = false;
     },
 

@@ -51,7 +51,6 @@ func DraftPost(c *gin.Context) {
 	if !db.Where("uuid = ?", uuid).First(&public).RecordNotFound() {
 		log.Println("was public")
 		statusError(c, "公開してあるため下書きには保存できません")
-
 	}
 
 	draft := database.Draft{}

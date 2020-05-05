@@ -10,7 +10,7 @@
                   <v-list-item :link="parts == 'item'">
                     <v-list-item-title>{{item.Title}}</v-list-item-title>
                     <v-spacer />
-                    <v-btn class="ma-2" outlined v-if="parts == 'item'">見る</v-btn>
+                    <v-btn class="ma-2" outlined v-if="parts == 'item'" :to="'/story/' + item.ID" >見る</v-btn>
                     <v-btn
                       class="ma-2"
                       outlined

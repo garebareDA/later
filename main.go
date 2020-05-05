@@ -24,6 +24,7 @@ func main() {
 	router.GET("/", routes.Home)
 	router.GET("/drafts",routes.DraftsIfinite)
 	router.GET("/publics", routes.PublicInfnite)
+	router.GET("/story", routes.GetStory)
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)
 	router.DELETE("/draft/remove", routes.RemoveDraft)
