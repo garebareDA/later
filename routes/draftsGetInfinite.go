@@ -27,7 +27,6 @@ func DraftsIfinite(c *gin.Context) {
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません")
-
 	}
 
 	db, err := database.ConnectDB()
