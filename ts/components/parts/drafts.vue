@@ -7,16 +7,22 @@
             <v-card-text>
               <v-list two-line>
                 <div class="posts" v-for="(item, index) in list" :key="index">
-                  <v-list-item :link="parts == 'item'">
+                  <v-list-item>
                     <v-list-item-title>{{item.Title}}</v-list-item-title>
                     <v-spacer />
-                    <v-btn class="ma-2" outlined v-if="parts == 'item'" :to="'/story/' + item.ID" >見る</v-btn>
+                    <v-btn class="ma-2" outlined v-if="parts != 'draft'" :to="'/story/' + item.ID">見る</v-btn>
                     <v-btn
                       class="ma-2"
                       outlined
                       v-on:click="startEdit(item.ID, item.Title, item.Content)"
+                      v-if="parts != 'like'"
                     >編集</v-btn>
-                    <v-btn class="ma-2" outlined v-on:click="removeDraft(item.ID, parts)">削除</v-btn>
+                    <v-btn
+                      class="ma-2"
+                      outlined
+                      v-if="parts != 'like'"
+                      v-on:click="removeDraft(item.ID, parts)"
+                    >削除</v-btn>
                   </v-list-item>
                   <v-divider />
                 </div>
@@ -38,6 +44,15 @@
                 <div slot="no-more"></div>
                 <div slot="no-results"></div>
               </infinite-loading>
+
+              <infinite-loading
+                spinner="spiral"
+                @infinite="infiniteGetLike"
+                v-if="parts === 'like'"
+              >
+                <div slot="no-more"></div>
+                <div slot="no-results"></div>
+              </infinite-loading>
             </v-card-text>
           </v-card>
         </v-col>
@@ -47,7 +62,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
@@ -56,30 +71,59 @@ export default Vue.extend({
   methods: {
     infiniteHandler: function($state: any) {
       const url = "/drafts";
-      this.infiniteGet(url, $state);
+      this.infiniteGet(url, "draft", $state);
     },
 
     infiniteHandlerItem: function($state: any) {
       const url = "/publics";
-      this.infiniteGet(url, $state);
+      this.infiniteGet(url, "public", $state);
     },
 
-    infiniteGet: function(url: string, $state: any) {
+    infiniteGetLike: function($state: any) {
+      const url = "/likes";
+      this.infiniteGet(url, "like", $state);
+    },
+
+    infiniteGet: function(url: string, change: string, $state: any) {
       const user = firebase.auth().currentUser;
       if (!user) {
         return;
       }
 
       user.getIdToken(true).then(token => {
-        this.$data.getNumber += 10;
+        let number;
+        if (change === "like") {
+          this.$data.getLike += 10;
+          number = this.$data.getLike;
+        }
+
+        if (change === "draft") {
+          this.$data.getDraft += 10;
+          number = this.$data.getDraft;
+        }
+
+        if (change === "public") {
+          this.$data.getPublic += 10;
+          number = this.$data.getPublic;
+        }
+
         const params = {
-          number: this.$data.getNumber,
+          number: number,
           token: token
         };
         axios
           .get(url, { params: params })
-          .then(res => {
-            this.$data.list.push(...res.data);
+          .then((res: AxiosResponse) => {
+            console.log(res);
+            if (res.data != "empty") {
+              this.$data.list.push(...res.data.get);
+            }
+
+            if (res.data.continue === false) {
+              $state.complete();
+              return;
+            }
+
             $state.loaded();
           })
           .catch(err => {
@@ -131,7 +175,9 @@ export default Vue.extend({
 
   data: function() {
     return {
-      getNumber: 0,
+      getDraft: 0,
+      getLike: 0,
+      getPublic: 0,
       list: []
     };
   }

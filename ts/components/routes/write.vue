@@ -28,7 +28,7 @@
 
           <v-tab-item value="like">
             <v-card flat>
-              <v-card-text>いいね</v-card-text>
+              <drafts @change="changeToEdit" @reload="likeReload" v-if="reload.like == true" :parts="'like'"/>
             </v-card>
           </v-tab-item>
         </v-tabs-items>
@@ -79,9 +79,17 @@ export default Vue.extend({
       await this.$nextTick();
       this.$data.reload.item = true;
     },
+
+    likeReload:async function() {
+      this.$data.reload.like = false;
+      await this.$nextTick();
+      this.$data.reload.like = true;
+    },
+
     updateDrafts:function(){
       this.$data.update.draft = true;
     },
+
     updatePublic:function(){
       this.$data.update.draft = true;
       this.$data.update.item = true;
@@ -100,6 +108,13 @@ export default Vue.extend({
       if(this.$data.tabs === "item" && itemIsUpdate){
         this.itemRelaod();
         this.$data.update.item = false;
+      }
+
+
+      const likeIsUpdate = this.$data.update.like;
+      if(this.$data.tabs === "like" && likeIsUpdate){
+        this.likeReload();
+        this.$data.update.like = false;
       }
     }
   },

@@ -14,6 +14,13 @@ type publicJson struct {
 	UUID    string `json:"uuid"  binding:"required"`
 }
 
+type publicGet struct {
+	ID      string `json: "id"`
+	Title   string `json: "title"`
+	Content string `json: "content"`
+}
+
+
 func PublicPost(c *gin.Context) {
 	var publicJson publicJson
 	c.BindJSON(&publicJson)
@@ -77,4 +84,81 @@ func PublicPost(c *gin.Context) {
 			"status": "更新しました",
 		})
 	}
+}
+
+func RemovePublic(c *gin.Context) {
+	var removesDraft removesDraft
+	c.BindJSON(&removesDraft)
+	token := removesDraft.Token
+	uuid := removesDraft.UUID
+
+	if token == "" {
+		log.Println("user not login")
+		statusError(c, "エラー")
+	}
+
+	_, err := firebase.FirebaseToken(token)
+	if err != nil {
+		log.Println("user not login")
+		statusError(c, "ログインしていません")
+	}
+
+	db, err := database.ConnectDB()
+	if err != nil {
+		log.Println("database is closed")
+		statusError(c, "データベースエラー")
+
+	}
+	defer db.Close()
+
+	db.Where("uuid = ?", uuid).Delete(&database.Public{})
+
+	c.JSON(200, gin.H{
+		"status": "削除しました",
+	})
+}
+
+func PublicInfnite(c *gin.Context) {
+	get := c.Query("number")
+	token := c.Query("token")
+
+	user, getNumber := infiniteAuxiliary(c, get, token)
+
+	db, err := database.ConnectDB()
+	if err != nil {
+		log.Println("database is closed")
+		statusError(c, "データベースエラー")
+	}
+	defer db.Close()
+
+	publics := []database.Public{}
+	getPublic := []publicGet{}
+	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&publics).Error
+
+	if err != nil {
+		log.Println("get number error")
+		statusError(c, "データベースエラー")
+	}
+
+	if len(publics) == 0 {
+		log.Println("arry is empty")
+		c.JSON(200, "empty")
+		c.Abort()
+		return
+	}
+
+	for _, public := range publics {
+		getPublic = append(getPublic, publicGet{ID: public.UUID, Title: public.Title, Content: public.Content})
+	}
+
+	last := database.Public{}
+	db.Last(&last)
+	if getNumber > last.ID {
+		log.Println("empty")
+		c.JSON(200, gin.H{"continue":false, "get":publics})
+		c.Abort()
+		return
+	}
+
+	c.JSON(200, gin.H{"continue":true, "get":publics})
 }

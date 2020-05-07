@@ -29,6 +29,8 @@ func main() {
 	router.GET("/publics", routes.PublicInfnite)
 	router.GET("/story", routes.GetStory)
 	router.GET("/like", routes.LikeGet)
+	router.GET("/likes", routes.LikeInfiniteGet)
+
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)
 	router.POST("/like", routes.LikePost)
