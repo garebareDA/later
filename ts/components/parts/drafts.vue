@@ -70,12 +70,12 @@ export default Vue.extend({
   props: ["parts"],
   methods: {
     infiniteHandler: function($state: any) {
-      const url = "/drafts";
+      const url = "/draft";
       this.infiniteGet(url, "draft", $state);
     },
 
     infiniteHandlerItem: function($state: any) {
-      const url = "/publics";
+      const url = "/public";
       this.infiniteGet(url, "public", $state);
     },
 
@@ -135,12 +135,12 @@ export default Vue.extend({
 
     removeDraft: async function(uuid: string, parts: any) {
       if (parts === "draft") {
-        const url = "/draft/remove";
+        const url = "/draft";
         this.delete(url, uuid);
       }
 
       if (parts === "item") {
-        const url = "/public/remove";
+        const url = "/public";
         this.delete(url, uuid);
       }
     },
