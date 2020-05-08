@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-type publicJson struct {
+type publicJSON struct {
 	Token   string `json:"token" binding:"required"`
 	Title   string `json:"title" binding:"required"`
 	Content string `json:"content"  binding:"required"`
@@ -20,14 +20,14 @@ type publicGet struct {
 	Content string
 }
 
-
+//PublicPost 記事の公開
 func PublicPost(c *gin.Context) {
-	var publicJson publicJson
-	c.BindJSON(&publicJson)
-	token := publicJson.Token
-	title := publicJson.Title
-	content := publicJson.Content
-	uuid := publicJson.UUID
+	var publicJSON publicJSON
+	c.BindJSON(&publicJSON)
+	token := publicJSON.Token
+	title := publicJSON.Title
+	content := publicJSON.Content
+	uuid := publicJSON.UUID
 
 	if content == "" {
 		log.Println("content is empty")
@@ -86,6 +86,7 @@ func PublicPost(c *gin.Context) {
 	}
 }
 
+//RemovePublic 公開記事の削除
 func RemovePublic(c *gin.Context) {
 	var removesDraft removesDraft
 	c.BindJSON(&removesDraft)
@@ -118,6 +119,7 @@ func RemovePublic(c *gin.Context) {
 	})
 }
 
+//PublicInfnite ユーザの公開記事の一覧
 func PublicInfnite(c *gin.Context) {
 	get := c.Query("number")
 	token := c.Query("token")

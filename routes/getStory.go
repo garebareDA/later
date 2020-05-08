@@ -5,12 +5,13 @@ import (
 	"log"
 )
 
-type storyJson struct{
+type storyJSON struct{
 	Content string
 	Title string
 	UserName string
 }
 
+//GetStory 投稿一つの取得
 func GetStory(c *gin.Context) {
 	id := c.Query("uuid")
 
@@ -27,6 +28,6 @@ func GetStory(c *gin.Context) {
 		statusError(c, "記事がみつかりませんでした")
 	}
 
-	json := storyJson{Content: public.Content, Title: public.Title, UserName: public.UserName}
+	json := storyJSON{Content: public.Content, Title: public.Title, UserName: public.UserName}
 	c.JSON(200, json)
 }

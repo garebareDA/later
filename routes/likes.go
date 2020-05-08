@@ -12,6 +12,7 @@ type likePosts struct {
 	UUID string `json:"uuid"  binding:"required"`
 }
 
+//LikePost いいねの投稿
 func LikePost(c *gin.Context){
 	var likePosts likePosts
 	c.BindJSON(&likePosts)
@@ -50,6 +51,7 @@ func LikePost(c *gin.Context){
 	c.JSON(200, gin.H{"status": "ok"})
 }
 
+//LikeGet いいねの取得
 func LikeGet(c *gin.Context){
 	id := c.Query("uuid")
 	token := c.Query("token")
@@ -81,6 +83,7 @@ func LikeGet(c *gin.Context){
 	c.JSON(200, gin.H{"status":"like"})
 }
 
+//LikeRemove いいねの削除
 func LikeRemove(c *gin.Context) {
 	var likePosts likePosts
 	c.BindJSON(&likePosts)
@@ -115,6 +118,7 @@ func LikeRemove(c *gin.Context) {
 	c.JSON(200, gin.H{"status":"OK"})
 }
 
+//LikeInfiniteGet ユーザのいいねした一覧
 func LikeInfiniteGet(c *gin.Context){
 	get := c.Query("number")
 	token := c.Query("token")

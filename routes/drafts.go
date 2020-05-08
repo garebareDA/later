@@ -18,15 +18,16 @@ type removesDraft struct {
 	UUID    string `json:"uuid"  binding:"required"`
 }
 
-type draftJson struct {
+type draftJSON struct {
 	Token   string `json:"token" binding:"required"`
 	Title   string `json:"title" binding:"required"`
 	Content string `json:"content"  binding:"required"`
 	DraftID string `json:"draftID"  binding:"required"`
 }
 
+//DraftPost 下書きの保存
 func DraftPost(c *gin.Context) {
-	var draftPosted draftJson
+	var draftPosted draftJSON
 	c.BindJSON(&draftPosted)
 	token := draftPosted.Token
 	title := draftPosted.Title
@@ -79,6 +80,7 @@ func DraftPost(c *gin.Context) {
 	})
 }
 
+//RemoveDraft 下書きの削除
 func RemoveDraft(c *gin.Context) {
 	var removesDraft removesDraft
 	c.BindJSON(&removesDraft)
@@ -111,6 +113,7 @@ func RemoveDraft(c *gin.Context) {
 	})
 }
 
+//DraftsIfinite インフィニティロード用
 func DraftsIfinite(c *gin.Context) {
 	get := c.Query("number")
 	token := c.Query("token")
