@@ -8,9 +8,9 @@ import (
 )
 
 type draftGet struct {
-	ID      string `json: "id"`
-	Title   string `json: "title"`
-	Content string `json: "content"`
+	ID      string
+	Title   string
+	Content string
 }
 
 type removesDraft struct {
@@ -54,7 +54,6 @@ func DraftPost(c *gin.Context) {
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー")
-
 	}
 	defer db.Close()
 
@@ -128,30 +127,21 @@ func DraftsIfinite(c *gin.Context) {
 	drafts := []database.Draft{}
 	getDrafts := []draftGet{}
 
-	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&drafts).Error
+	err = db.Offset(getNumber - 10).Where("user_id = ? ", user.UID,).Limit(10).Find(&drafts).Error
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー")
 	}
 
 	if len(drafts) == 0 {
-		log.Println("arry is empty")
-		c.JSON(200, "empty")
+		log.Println("empty")
+		c.JSON(200, gin.H{"continue":false, "get":getDrafts})
 		c.Abort()
 		return
 	}
 
 	for _, draft := range drafts {
 		getDrafts = append(getDrafts, draftGet{ID: draft.DraftID, Title: draft.Title, Content: draft.Content})
-	}
-
-	last := database.Draft{}
-	db.Last(&last)
-	if getNumber > last.ID {
-		log.Println("empty")
-		c.JSON(200, gin.H{"continue":false, "get":getDrafts})
-		c.Abort()
-		return
 	}
 
 	c.JSON(200, gin.H{"continue":true, "get":getDrafts})

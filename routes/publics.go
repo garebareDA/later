@@ -15,9 +15,9 @@ type publicJson struct {
 }
 
 type publicGet struct {
-	ID      string `json: "id"`
-	Title   string `json: "title"`
-	Content string `json: "content"`
+	ID      string
+	Title   string
+	Content string
 }
 
 
@@ -133,16 +133,17 @@ func PublicInfnite(c *gin.Context) {
 
 	publics := []database.Public{}
 	getPublic := []publicGet{}
-	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&publics).Error
 
+	log.Println(getNumber)
+	err = db.Offset(getNumber - 10).Where("user_id = ?", user.UID).Limit(10).Find(&publics).Error
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー")
 	}
 
 	if len(publics) == 0 {
-		log.Println("arry is empty")
-		c.JSON(200, "empty")
+		log.Println("empty")
+		c.JSON(200, gin.H{"continue":false, "get":getPublic})
 		c.Abort()
 		return
 	}
@@ -151,14 +152,5 @@ func PublicInfnite(c *gin.Context) {
 		getPublic = append(getPublic, publicGet{ID: public.UUID, Title: public.Title, Content: public.Content})
 	}
 
-	last := database.Public{}
-	db.Last(&last)
-	if getNumber > last.ID {
-		log.Println("empty")
-		c.JSON(200, gin.H{"continue":false, "get":publics})
-		c.Abort()
-		return
-	}
-
-	c.JSON(200, gin.H{"continue":true, "get":publics})
+	c.JSON(200, gin.H{"continue":true, "get":getPublic})
 }

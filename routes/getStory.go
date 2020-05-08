@@ -6,9 +6,9 @@ import (
 )
 
 type storyJson struct{
-	Content string `json: "content"`
-	Title string `json: "title"`
-	UserName string `json: "userName"`
+	Content string
+	Title string
+	UserName string
 }
 
 func GetStory(c *gin.Context) {
@@ -22,7 +22,7 @@ func GetStory(c *gin.Context) {
 	defer db.Close()
 
 	public := database.Public{}
-	if db.Where("uuid = ?", id).First(&public).RecordNotFound() {
+	if db.Where("uuid = ?", id).First(&public).Error != nil {
 		log.Println("recoad not found")
 		statusError(c, "記事がみつかりませんでした")
 	}

@@ -131,16 +131,17 @@ func LikeInfiniteGet(c *gin.Context){
 	likes := []database.Like{}
 	likesGet := []draftGet{}
 
-	err = db.Where("user_id = ? AND id BETWEEN ? AND ?", user.UID, getNumber-10, getNumber-1).Find(&likes).Error
+	err = db.Offset(getNumber - 10).Where("user_id = ?", user.UID,).Limit(10).Find(&likes).Error
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー")
 	}
 
 	if len(likes) == 0 {
-		log.Println("arry is empty")
-		c.JSON(200, "empty")
+		log.Println("empty")
+		c.JSON(200, gin.H{"continue":false, "get":likesGet})
 		c.Abort()
+		return
 	}
 
 	for _, like := range likes {
@@ -150,15 +151,6 @@ func LikeInfiniteGet(c *gin.Context){
 			statusError(c, "記事がみつかりませんでした")
 		}
 		likesGet = append(likesGet, draftGet{ID:public.UUID, Title:public.Title , Content: public.Content})
-	}
-
-	last := database.Like{}
-	db.Last(&last)
-	if getNumber > last.ID {
-		log.Println("empty")
-		c.JSON(200, gin.H{"continue":false, "get":likesGet})
-		c.Abort()
-		return
 	}
 
 	c.JSON(200, gin.H{"continue":true, "get":likesGet})

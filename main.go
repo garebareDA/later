@@ -34,8 +34,10 @@ func main() {
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)
 	router.POST("/like", routes.LikePost)
+
 	router.DELETE("/draft/remove", routes.RemoveDraft)
 	router.DELETE("/public/remove", routes.RemovePublic)
 	router.DELETE("/like", routes.LikeRemove)
+
 	router.Run(":8000")
 }
