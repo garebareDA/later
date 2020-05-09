@@ -22,14 +22,13 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 	router.Static("static", "./static/")
 
-	//routesの中身を全体的にリファクタリング
-	//URLをまとめる
 	router.GET("/", routes.Home)
 	router.GET("/draft",routes.DraftsIfinite)
 	router.GET("/public", routes.PublicInfnite)
 	router.GET("/likes", routes.LikeInfiniteGet)
 	router.GET("/like", routes.LikeGet)
 	router.GET("/story", routes.GetStory)
+	router.GET("/homes", routes.HomeGet)
 
 	router.POST("/draft", routes.DraftPost)
 	router.POST("/public", routes.PublicPost)

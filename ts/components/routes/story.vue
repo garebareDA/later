@@ -18,6 +18,7 @@
               <v-card-subtitle>by {{userName}}</v-card-subtitle>
               <div v-html="content" class="text--primary ma-3" />
             </v-card>
+            <v-divider />
           </v-col>
         </v-row>
       </v-container>

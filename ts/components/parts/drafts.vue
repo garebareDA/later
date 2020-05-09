@@ -3,7 +3,7 @@
     <v-container>
       <v-row align="center" justify="center">
         <v-col>
-          <v-card class="elevation-12">
+          <v-card class="elevation-12 mb-6 mx-auto" max-width="80%">
             <v-card-text>
               <v-list two-line>
                 <div class="posts" v-for="(item, index) in list" :key="index">
@@ -114,7 +114,6 @@ export default Vue.extend({
         axios
           .get(url, { params: params })
           .then((res: AxiosResponse) => {
-            console.log(res);
             if (res.data != "empty") {
               this.$data.list.push(...res.data.get);
             }

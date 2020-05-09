@@ -136,8 +136,7 @@ func PublicInfnite(c *gin.Context) {
 	publics := []database.Public{}
 	getPublic := []publicGet{}
 
-	log.Println(getNumber)
-	err = db.Offset(getNumber - 10).Where("user_id = ?", user.UID).Limit(10).Find(&publics).Error
+	err = db.Offset(getNumber - 10).Where("user_id = ?", user.UID).Order("id desc").Limit(10).Find(&publics).Error
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー")
