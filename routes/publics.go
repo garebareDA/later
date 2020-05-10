@@ -32,30 +32,34 @@ func PublicPost(c *gin.Context) {
 	if content == "" {
 		log.Println("content is empty")
 		statusError(c, "記事の中身がからです", 500)
+		return
 	}
 
 	if title == "" {
 		log.Println("title is empty")
 		statusError(c, "タイトルがからです", 500)
+		return
 	}
 
 	user, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 402)
+		return
 	}
 
 	profile, err := firebase.FirebaseUser(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 402)
-
+		return
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -94,23 +98,27 @@ func RemovePublic(c *gin.Context) {
 	if token == "" {
 		log.Println("user not login")
 		statusError(c, "エラー", 402)
+		return
 	}
 
 	_, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 402)
+		return
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
-
+		return
 	}
 	defer db.Close()
 
-	db.Where("uuid = ?", uuid).Delete(&database.Public{})
+	if db.Where("uuid = ?", uuid).Delete(&database.Public{}).Error != nil {
+		statusError(c, "削除できませんでした", 500)
+	}
 
 	c.JSON(200, gin.H{
 		"status": "削除しました",
@@ -144,7 +152,6 @@ func PublicInfnite(c *gin.Context) {
 		log.Println("empty")
 		c.JSON(200, gin.H{"continue":false, "get":getPublic})
 		c.Abort()
-		return
 	}
 
 	for _, public := range publics {

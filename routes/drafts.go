@@ -37,24 +37,27 @@ func DraftPost(c *gin.Context) {
 	if content == "" {
 		log.Println("content is empty")
 		statusError(c, "記事の中身がからです", 500)
+		return
 	}
 
 	if title == "" {
 		log.Println("title is empty")
 		statusError(c, "タイトルがからです", 500)
+		return
 	}
 
 	user, err := firebase.FirebaseUser(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 500)
-
+		return
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -91,23 +94,31 @@ func RemoveDraft(c *gin.Context) {
 	if token == "" {
 		log.Println("user not login")
 		statusError(c, "エラー", 403)
+		return
 	}
 
 	_, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)
+		return
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 
 	}
 	defer db.Close()
 
-	db.Where("draft_id = ?", uuid).Delete(&database.Draft{})
+	if db.Where("draft_id = ?", uuid).Delete(&database.Draft{}).Error != nil {
+		log.Println("delete error")
+		statusError(c, "削除できませんでした", 500)
+		return
+	}
+
 	c.JSON(200, gin.H{
 		"status": "削除しました",
 	})

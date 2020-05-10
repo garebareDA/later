@@ -23,18 +23,21 @@ func LikePost(c *gin.Context){
 	if token == "" {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)
+		return
 	}
 
 	user, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)
+		return
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -42,6 +45,7 @@ func LikePost(c *gin.Context){
 	if !db.Where("uuid = ? AND user_id = ?", uuid, user.UID).First(&like).RecordNotFound() {
 		log.Println("like found")
 		statusError(c, "すでにいいねしてあります", 500)
+		return
 	}
 
 	like.UUID = uuid
@@ -94,18 +98,21 @@ func LikeRemove(c *gin.Context) {
 	if token == "" {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 204)
+		return
 	}
 
 	user, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 204)
+		return
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -113,6 +120,7 @@ func LikeRemove(c *gin.Context) {
 	if err != nil{
 		log.Println("like delete error")
 		statusError(c, "いいねを取り消せません", 500)
+		return
 	}
 
 	c.JSON(200, gin.H{"status":"OK"})
@@ -153,6 +161,7 @@ func LikeInfiniteGet(c *gin.Context){
 		if db.Where("uuid = ?", like.UUID).First(&public).Error != nil {
 			log.Println("recoad not found")
 			statusError(c, "記事がみつかりませんでした", 404)
+			return
 		}
 		likesGet = append(likesGet, draftGet{ID:public.UUID, Title:public.Title , Content: public.Content})
 	}

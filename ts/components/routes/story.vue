@@ -5,6 +5,7 @@
         <v-row align="center" justify="center">
           <v-col cols="20" sm="8" md="20">
             <v-card>
+              <h1 v-if="errorMessage != ''">{{errorMessage}}</h1>
               <v-btn
                 color="pink"
                 v-if="isLogin"
@@ -69,8 +70,8 @@ export default Vue.extend({
               _this.$data.like = false;
             }
           })
-          .catch(err => {
-            console.log(err);
+          .catch(error => {
+            _this.$data.errorMessage = error.response?.data.error;
           });
       });
     });
