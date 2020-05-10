@@ -109,6 +109,9 @@ export default Vue.extend({
             if (error.response?.data.error != undefined) {
               this.$data.errorMessage = error.response?.data.error;
               this.$data.foundMessage = "";
+            }else{
+              this.$data.errorMessage = "不明なエラー"
+              this.$data.foundMessage = "";
             }
           });
       });

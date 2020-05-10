@@ -55,9 +55,10 @@ export default Vue.extend({
           $state.loaded();
         })
         .catch(error => {
-          console.log(error.response?.data.error);
           if (error.response?.data.error != undefined) {
             this.$data.errorMessage = error.response?.data.error;
+          }else{
+            this.$data.errorMessage = "不明なエラー"
           }
           $state.complete();
         });

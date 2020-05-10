@@ -138,9 +138,10 @@ export default Vue.extend({
                 $state.loaded();
               })
               .catch((error: AxiosError) => {
-                console.log(error.response?.data.error)
                 if (error.response?.data.error != undefined) {
                   _this.$data.errorMessage = error.response?.data.error;
+                }else{
+                  _this.$data.errorMessage = "不明なエラー";
                 }
                 $state.complete();
               });
