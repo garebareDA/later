@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+//HomeGets インフィニティロードに渡す用
 type HomeGets struct {
 	ID       string
 	Title    string
