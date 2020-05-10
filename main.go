@@ -38,5 +38,9 @@ func main() {
 	router.DELETE("/public", routes.RemovePublic)
 	router.DELETE("/like", routes.LikeRemove)
 
+	router.NoRoute(func(c *gin.Context) {
+    c.HTML(404, "notFound.html", gin.H{})
+	})
+
 	router.Run(":8000")
 }
