@@ -4,7 +4,7 @@
       <v-container>
         <v-row align="center" justify="center">
           <v-col>
-            <v-card class=" mb-6 mx-auto" max-width="80%">
+            <v-card class="mb-6 mx-auto" max-width="80%">
               <v-card-text>
                 <v-list two-line>
                   <div class="posts" v-for="(item, index) in list" :key="index">
@@ -17,6 +17,7 @@
                     </v-list-item>
                   </div>
                 </v-list>
+                <div v-if="errorMesasge != ''">{{errorMesasge}}</div>
                 <infinite-loading spinner="spiral" @infinite="infiniteHandler">
                   <div slot="no-more"></div>
                   <div slot="no-results"></div>
@@ -53,8 +54,10 @@ export default Vue.extend({
 
           $state.loaded();
         })
-        .catch(err => {
-          console.log(err);
+        .catch(error => {
+          if (error.response?.data.error != undefined) {
+            this.$data.errorMessage = error.response?.data.error;
+          }
           $state.complete();
         });
     }
@@ -63,7 +66,8 @@ export default Vue.extend({
   data: () => {
     return {
       getPublic: 0,
-      list: []
+      list: [],
+      errorMessage: ""
     };
   }
 });

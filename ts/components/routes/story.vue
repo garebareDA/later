@@ -17,8 +17,8 @@
               <v-card-title class="display-2 text--primary">{{title}}</v-card-title>
               <v-card-subtitle>by {{userName}}</v-card-subtitle>
               <div v-html="content" class="text--primary ma-3" />
+              <v-divider />
             </v-card>
-            <v-divider />
           </v-col>
         </v-row>
       </v-container>

@@ -27,13 +27,13 @@ func HomeGet(c *gin.Context) {
 	getNumber, err := strconv.Atoi(get)
 	if err != nil {
 		log.Println("number error")
-		statusError(c, "number error")
+		statusError(c, "number error", 402)
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 	defer db.Close()
 
@@ -43,7 +43,7 @@ func HomeGet(c *gin.Context) {
 	err = db.Offset(getNumber - 10).Order("id desc").Limit(10).Find(&publics).Error
 	if err != nil {
 		log.Println("get number error")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 
 	if len(publics) == 0 {

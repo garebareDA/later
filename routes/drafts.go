@@ -36,32 +36,33 @@ func DraftPost(c *gin.Context) {
 
 	if content == "" {
 		log.Println("content is empty")
-		statusError(c, "記事の中身がからです")
+		statusError(c, "記事の中身がからです", 500)
 	}
 
 	if title == "" {
 		log.Println("title is empty")
-		statusError(c, "タイトルがからです")
+		statusError(c, "タイトルがからです", 500)
 	}
 
 	user, err := firebase.FirebaseUser(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません")
+		statusError(c, "ログインしていません", 500)
 
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 	defer db.Close()
 
 	public := database.Public{}
 	if !db.Where("uuid = ?", uuid).First(&public).RecordNotFound() {
 		log.Println("was public")
-		statusError(c, "公開してあるため下書きには保存できません")
+		statusError(c, "公開してあるため下書きには保存できません", 500)
+		return
 	}
 
 	draft := database.Draft{}
@@ -75,7 +76,7 @@ func DraftPost(c *gin.Context) {
 		db.Model(&draft).Where("draft_id = ?", uuid).Updates(map[string]interface{}{"Title": title, "Content": content})
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(201, gin.H{
 		"status": "保存しました",
 	})
 }
@@ -89,25 +90,24 @@ func RemoveDraft(c *gin.Context) {
 
 	if token == "" {
 		log.Println("user not login")
-		statusError(c, "エラー")
+		statusError(c, "エラー", 403)
 	}
 
 	_, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません")
+		statusError(c, "ログインしていません", 403)
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 
 	}
 	defer db.Close()
 
 	db.Where("draft_id = ?", uuid).Delete(&database.Draft{})
-
 	c.JSON(200, gin.H{
 		"status": "削除しました",
 	})
@@ -123,17 +123,17 @@ func DraftsIfinite(c *gin.Context) {
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 	defer db.Close()
 
 	drafts := []database.Draft{}
 	getDrafts := []draftGet{}
 
-	err = db.Offset(getNumber - 10).Where("user_id = ? ", user.UID,).Limit(10).Find(&drafts).Error
+	err = db.Offset(getNumber - 10).Where("user_id = ? ", user.UID,).Order("id desc").Limit(10).Find(&drafts).Error
 	if err != nil {
 		log.Println("get number error")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 
 	if len(drafts) == 0 {

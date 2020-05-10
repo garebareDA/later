@@ -31,33 +31,31 @@ func PublicPost(c *gin.Context) {
 
 	if content == "" {
 		log.Println("content is empty")
-		statusError(c, "記事の中身がからです")
+		statusError(c, "記事の中身がからです", 500)
 	}
 
 	if title == "" {
 		log.Println("title is empty")
-		statusError(c, "タイトルがからです")
+		statusError(c, "タイトルがからです", 500)
 	}
 
 	user, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません")
-
+		statusError(c, "ログインしていません", 402)
 	}
 
 	profile, err := firebase.FirebaseUser(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません")
+		statusError(c, "ログインしていません", 402)
 
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
-
+		statusError(c, "データベースエラー", 500)
 	}
 	defer db.Close()
 
@@ -75,12 +73,12 @@ func PublicPost(c *gin.Context) {
 		public.Like = 0
 		public.UUID = uuid
 		db.Create(&public)
-		c.JSON(200, gin.H{
+		c.JSON(201, gin.H{
 			"status": "公開しました",
 		})
 	} else {
 		db.Model(&public).Where("uuid = ?", uuid).Updates(map[string]interface{}{"Title": title, "Content": content})
-		c.JSON(200, gin.H{
+		c.JSON(201, gin.H{
 			"status": "更新しました",
 		})
 	}
@@ -95,19 +93,19 @@ func RemovePublic(c *gin.Context) {
 
 	if token == "" {
 		log.Println("user not login")
-		statusError(c, "エラー")
+		statusError(c, "エラー", 402)
 	}
 
 	_, err := firebase.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません")
+		statusError(c, "ログインしていません", 402)
 	}
 
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 
 	}
 	defer db.Close()
@@ -129,7 +127,7 @@ func PublicInfnite(c *gin.Context) {
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Println("database is closed")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 	defer db.Close()
 
@@ -139,7 +137,7 @@ func PublicInfnite(c *gin.Context) {
 	err = db.Offset(getNumber - 10).Where("user_id = ?", user.UID).Order("id desc").Limit(10).Find(&publics).Error
 	if err != nil {
 		log.Println("get number error")
-		statusError(c, "データベースエラー")
+		statusError(c, "データベースエラー", 500)
 	}
 
 	if len(publics) == 0 {

@@ -38,11 +38,11 @@
 <script lang="ts">
 import Vue from "vue";
 import marked from "marked";
-import createDOMPurify  from "dompurify";
+import createDOMPurify from "dompurify";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 
 export default Vue.extend({
   props: ["texts", "titles", "uuids"],
@@ -96,18 +96,20 @@ export default Vue.extend({
         };
         axios
           .post(url, draftParams)
-          .then(res => {
+          .then((res: AxiosResponse) => {
             this.$data.post = true;
             this.$data.posted = false;
             this.$data.foundMessage = res.data.status;
             this.$data.errorMessage = "";
             this.$emit("drafts");
           })
-          .catch(error => {
+          .catch((error: AxiosError) => {
             this.$data.error = true;
             this.$data.posted = false;
-            this.$data.errorMessage = error;
-            this.$data.foundMessage = "";
+            if (error.response?.data.error != undefined) {
+              this.$data.errorMessage = error.response?.data.error;
+              this.$data.foundMessage = "";
+            }
           });
       });
     },
