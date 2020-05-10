@@ -136,6 +136,7 @@ func PublicInfnite(c *gin.Context) {
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -146,12 +147,14 @@ func PublicInfnite(c *gin.Context) {
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 
 	if len(publics) == 0 {
 		log.Println("empty")
 		c.JSON(200, gin.H{"continue":false, "get":getPublic})
 		c.Abort()
+		return
 	}
 
 	for _, public := range publics {

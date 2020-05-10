@@ -19,6 +19,7 @@ func GetStory(c *gin.Context) {
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -26,6 +27,7 @@ func GetStory(c *gin.Context) {
 	if db.Where("uuid = ?", id).First(&public).Error != nil {
 		log.Println("recoad not found")
 		statusError(c, "記事がみつかりませんでした", 500)
+		return
 	}
 
 	json := storyJSON{Content: public.Content, Title: public.Title, UserName: public.UserName}

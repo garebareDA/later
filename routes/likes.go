@@ -137,6 +137,7 @@ func LikeInfiniteGet(c *gin.Context){
 	if err != nil {
 		log.Println("database is closed")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 	defer db.Close()
 
@@ -147,6 +148,7 @@ func LikeInfiniteGet(c *gin.Context){
 	if err != nil {
 		log.Println("get number error")
 		statusError(c, "データベースエラー", 500)
+		return
 	}
 
 	if len(likes) == 0 {

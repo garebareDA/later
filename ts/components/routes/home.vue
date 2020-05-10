@@ -17,7 +17,7 @@
                     </v-list-item>
                   </div>
                 </v-list>
-                <div v-if="errorMesasge != ''">{{errorMesasge}}</div>
+                <div v-if="errorMessage != ''">{{errorMessage}}</div>
                 <infinite-loading spinner="spiral" @infinite="infiniteHandler">
                   <div slot="no-more"></div>
                   <div slot="no-results"></div>
@@ -55,6 +55,7 @@ export default Vue.extend({
           $state.loaded();
         })
         .catch(error => {
+          console.log(error.response?.data.error);
           if (error.response?.data.error != undefined) {
             this.$data.errorMessage = error.response?.data.error;
           }

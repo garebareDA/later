@@ -34,7 +34,7 @@
                   </div>
                 </div>
               </v-list>
-              <div v-if="errorMessag != ''">{{errorMessag}}</div>
+              <div v-if="errorMessage != ''">{{errorMessage}}</div>
               <div infinite-wrapper>
                 <infinite-loading
                   force-use-infinite-wrapper="true"
@@ -138,6 +138,7 @@ export default Vue.extend({
                 $state.loaded();
               })
               .catch((error: AxiosError) => {
+                console.log(error.response?.data.error)
                 if (error.response?.data.error != undefined) {
                   _this.$data.errorMessage = error.response?.data.error;
                 }
