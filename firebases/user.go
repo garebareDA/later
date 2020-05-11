@@ -1,4 +1,4 @@
-package firebase
+package firebases
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"os"
 )
 
+//FirebaseToken ユーザーのトークンを取得
 func FirebaseToken(tokens string) (*auth.Token, error) {
 	ctx := context.Background()
 	credentials, err := google.CredentialsFromJSON(ctx, []byte(os.Getenv("FIREBASE_CONFIG")))
@@ -36,6 +37,7 @@ func FirebaseToken(tokens string) (*auth.Token, error) {
 	return token, err
 }
 
+//FirebaseUser ユーザーのレコード取得
 func FirebaseUser(tokens string) (*auth.UserRecord, error) {
 	ctx := context.Background()
 	credentials, err := google.CredentialsFromJSON(ctx, []byte(os.Getenv("FIREBASE_CONFIG")))

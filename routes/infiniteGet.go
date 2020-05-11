@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"later/firebase"
+	"later/firebases"
 	"firebase.google.com/go/auth"
 	"log"
 	"strconv"
@@ -14,7 +14,7 @@ func infiniteAuxiliary(c *gin.Context, get string, token string)(*auth.Token, in
 		statusError(c, "エラー", 403)
 	}
 
-	user, err := firebase.FirebaseToken(token)
+	user, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)

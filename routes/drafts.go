@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"later/database"
-	"later/firebase"
+	"later/firebases"
 	"log"
 )
 
@@ -46,7 +46,7 @@ func DraftPost(c *gin.Context) {
 		return
 	}
 
-	user, err := firebase.FirebaseUser(token)
+	user, err := firebases.FirebaseUser(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 500)
@@ -97,7 +97,7 @@ func RemoveDraft(c *gin.Context) {
 		return
 	}
 
-	_, err := firebase.FirebaseToken(token)
+	_, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)

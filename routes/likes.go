@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"later/database"
-	"later/firebase"
+	"later/firebases"
 	"log"
 )
 
@@ -26,7 +26,7 @@ func LikePost(c *gin.Context){
 		return
 	}
 
-	user, err := firebase.FirebaseToken(token)
+	user, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)
@@ -65,7 +65,7 @@ func LikeGet(c *gin.Context){
 		statusError(c, "ログインしていません", 204)
 	}
 
-	user, err := firebase.FirebaseToken(token)
+	user, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 204)
@@ -101,7 +101,7 @@ func LikeRemove(c *gin.Context) {
 		return
 	}
 
-	user, err := firebase.FirebaseToken(token)
+	user, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 204)
