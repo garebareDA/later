@@ -8,15 +8,16 @@
               <h1 v-if="errorMessage != ''">{{errorMessage}}</h1>
               <v-btn
                 color="pink"
-                v-if="isLogin"
+                v-if="isLogin && title != '' && content != ''"
                 :outlined="!like"
                 class="ma-6"
                 style="float: right;"
                 v-on:click="likes()"
                 dark
               >いいね</v-btn>
-              <v-card-title class="display-2 text--primary">{{title}}</v-card-title>
-              <v-card-subtitle>by {{userName}}</v-card-subtitle>
+              <v-card-title class="display-2 text--primary" v-if="title != ''">{{title}}</v-card-title>
+              <v-card-title class="display-2 text--primary" v-if="title === ''">404 not found</v-card-title>
+              <v-card-subtitle v-if="userName != ''">by {{userName}}</v-card-subtitle>
               <div v-html="content" class="text--primary ma-3" />
               <v-divider />
             </v-card>
