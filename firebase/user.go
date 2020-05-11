@@ -1,17 +1,24 @@
 package firebase
 
-import(
+import (
 	"context"
-	"log"
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/option"
+	"log"
+	"os"
 )
 
 func FirebaseToken(tokens string) (*auth.Token, error) {
 	ctx := context.Background()
-	var err error
+	credentials, err := google.CredentialsFromJSON(ctx, []byte(os.Getenv("FIREBASE_CONFIG")))
+	if err != nil {
+		log.Println(err)
+	}
 
-	app, err := firebase.NewApp(ctx, nil)
+	opt := option.WithCredentials(credentials)
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Println(err)
 	}
@@ -29,7 +36,7 @@ func FirebaseToken(tokens string) (*auth.Token, error) {
 	return token, err
 }
 
-func FirebaseUser(tokens string)(*auth.UserRecord, error){
+func FirebaseUser(tokens string) (*auth.UserRecord, error) {
 	ctx := context.Background()
 	var err error
 
