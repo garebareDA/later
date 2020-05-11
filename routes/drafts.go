@@ -49,7 +49,7 @@ func DraftPost(c *gin.Context) {
 	user, err := firebases.FirebaseUser(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません", 500)
+		statusError(c, "ログインしていません", 402)
 		return
 	}
 
@@ -129,7 +129,13 @@ func DraftsIfinite(c *gin.Context) {
 	get := c.Query("number")
 	token := c.Query("token")
 
-	user, getNumber := infiniteAuxiliary(c, get, token)
+	user, getNumber, err := infiniteAuxiliary( get, token)
+	log.Println(user)
+	if err != nil {
+		log.Println(err)
+		statusError(c, "ユーザー認証エラー", 402)
+		return
+	}
 
 	db, err := database.ConnectDB()
 	if err != nil {

@@ -1,30 +1,34 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"later/firebases"
 	"firebase.google.com/go/auth"
 	"log"
 	"strconv"
+	"errors"
 )
 
-func infiniteAuxiliary(c *gin.Context, get string, token string)(*auth.Token, int) {
+func infiniteAuxiliary(get string, token string)(*auth.Token, int, error) {
+	var err error
 	if get == "" || token == "" {
 		log.Println("user not login")
-		statusError(c, "エラー", 403)
+		err = errors.New("ユーザーがログインしていません")
+		return nil, 0, err
 	}
 
 	user, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
-		statusError(c, "ログインしていません", 403)
+		err = errors.New("ユーザーがログインしていません")
+		return nil, 0, err
 	}
 
 	getNumber, err := strconv.Atoi(get)
 	if err != nil {
 		log.Println("number error")
-		statusError(c, "構文が無効です", 400)
+		err = errors.New("ナンバーエラー")
+		return nil, 0, err
 	}
 
-	return user, getNumber
+	return user, getNumber, err
 }

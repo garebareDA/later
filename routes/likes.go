@@ -131,7 +131,11 @@ func LikeInfiniteGet(c *gin.Context){
 	get := c.Query("number")
 	token := c.Query("token")
 
-	user, getNumber := infiniteAuxiliary(c, get, token)
+	user, getNumber ,err := infiniteAuxiliary(get, token)
+	if err != nil{
+		statusError(c, "ユーザー認証エラー", 402)
+		return
+	}
 
 	db, err := database.ConnectDB()
 	if err != nil {

@@ -106,12 +106,11 @@ export default Vue.extend({
           .catch((error: AxiosError) => {
             this.$data.error = true;
             this.$data.posted = false;
+            this.$data.foundMessage = "";
             if (error.response?.data.error != undefined) {
               this.$data.errorMessage = error.response?.data.error;
-              this.$data.foundMessage = "";
             }else{
               this.$data.errorMessage = "不明なエラー"
-              this.$data.foundMessage = "";
             }
           });
       });
@@ -147,7 +146,11 @@ export default Vue.extend({
             this.$data.error = true;
             this.$data.posted = false;
             this.$data.foundMessage = "";
-            this.$data.errorMessage = error;
+            if (error.response?.data.error != undefined) {
+              this.$data.errorMessage = error.response?.data.error;
+            }else{
+              this.$data.errorMessage = "不明なエラー"
+            }
           });
       });
     },
