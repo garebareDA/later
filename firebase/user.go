@@ -38,9 +38,13 @@ func FirebaseToken(tokens string) (*auth.Token, error) {
 
 func FirebaseUser(tokens string) (*auth.UserRecord, error) {
 	ctx := context.Background()
-	var err error
+	credentials, err := google.CredentialsFromJSON(ctx, []byte(os.Getenv("FIREBASE_CONFIG")))
+	if err != nil {
+		log.Println(err)
+	}
 
-	app, err := firebase.NewApp(ctx, nil)
+	opt := option.WithCredentials(credentials)
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Println(err)
 	}
