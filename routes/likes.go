@@ -171,6 +171,8 @@ func LikeInfiniteGet(c *gin.Context){
 				statusError(c, "データベースエラー", 500)
 				return
 			}
+			log.Println("like delete")
+			continue
 		}
 		likesGet = append(likesGet, draftGet{ID:public.UUID, Title:public.Title , Content: public.Content})
 	}
