@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"later/database"
 	"log"
-	"net/http"
 	"strconv"
 )
 
@@ -18,7 +17,7 @@ type HomeGets struct {
 
 //Home ホームの表示
 func Home(c *gin.Context)  {
-	c.HTML(http.StatusFound, "index.html", gin.H{})
+	c.HTML(200, "index.html", gin.H{})
 }
 
 //HomeGet ホームの記事の取得
