@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>later</title>
+
+  <link rel="icon" href="static/images/favicon.ico">
+
+  <meta property="og:title" content="later" />
+  <meta property="og:site_name" content="later" />
+  <meta property="og:url" content="https://later-090.herokuapp.com/" />
+  <meta property="og:image" content="https://later-090.herokuapp.com/static/images/thum.png">
+  <meta property="og:description" content="記事を投稿できるサイトです" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="slope">
+  <meta name="twitter:site" content="https://later-090.herokuapp.com/">
+  <meta name="twitter:image" content="https://later-090.herokuapp.com/static/images/thum.png">
+  <meta name="twitter:description" content="記事を投稿できるサイトです">
 </head>
+
 <body>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <div id="app">
     <v-app>
       <heads :islogin="isLogin"></heads>
@@ -16,4 +32,5 @@
   </div>
   <script src="static/index.js"></script>
 </body>
+
 </html>
