@@ -101,7 +101,7 @@ func RemovePublic(c *gin.Context) {
 		return
 	}
 
-	_, err := firebases.FirebaseToken(token)
+	user, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 402)
@@ -116,8 +116,9 @@ func RemovePublic(c *gin.Context) {
 	}
 	defer db.Close()
 
-	if db.Where("uuid = ?", uuid).Delete(&database.Public{}).Error != nil {
+	if db.Where("uuid = ? AND user_id = ?", uuid, user.UID).Delete(&database.Public{}).Error != nil {
 		statusError(c, "削除できませんでした", 500)
+		return
 	}
 
 	c.JSON(200, gin.H{

@@ -97,7 +97,7 @@ func RemoveDraft(c *gin.Context) {
 		return
 	}
 
-	_, err := firebases.FirebaseToken(token)
+	usr, err := firebases.FirebaseToken(token)
 	if err != nil {
 		log.Println("user not login")
 		statusError(c, "ログインしていません", 403)
@@ -113,7 +113,7 @@ func RemoveDraft(c *gin.Context) {
 	}
 	defer db.Close()
 
-	if db.Where("draft_id = ?", uuid).Delete(&database.Draft{}).Error != nil {
+	if db.Where("draft_id = ? ANS user_id = ?", uuid, usr.UID).Delete(&database.Draft{}).Error != nil {
 		log.Println("delete error")
 		statusError(c, "削除できませんでした", 500)
 		return
