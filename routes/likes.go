@@ -166,8 +166,11 @@ func LikeInfiniteGet(c *gin.Context){
 		public := database.Public{}
 		if db.Where("uuid = ?", like.UUID).First(&public).Error != nil {
 			log.Println("recoad not found")
-			statusError(c, "記事がみつかりませんでした", 404)
-			return
+			if db.Where("uuid = ?", like.UUID).Delete(&database.Like{}).Error != nil{
+				log.Println("likes delete error")
+				statusError(c, "データベースエラー", 500)
+				return
+			}
 		}
 		likesGet = append(likesGet, draftGet{ID:public.UUID, Title:public.Title , Content: public.Content})
 	}
