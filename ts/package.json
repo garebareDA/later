@@ -9,7 +9,7 @@
     "axios": "^0.19.2",
     "css-loader": "^3.5.2",
     "deepmerge": "^4.2.2",
-    "dompurify": "^2.0.10",
+    "dompurify": "^2.0.17",
     "fibers": "^4.0.2",
     "firebase": "^7.14.2",
     "marked": "^1.0.0",
