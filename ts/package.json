@@ -6,7 +6,7 @@
   "devDependencies": {
     "@types/dompurify": "^2.0.1",
     "@types/uuid": "^7.0.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "css-loader": "^3.5.2",
     "deepmerge": "^4.2.2",
     "dompurify": "^2.0.10",
